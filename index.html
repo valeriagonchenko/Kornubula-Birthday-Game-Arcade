@@ -1,483 +1,1300 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Kornubula Birthday Quest</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;image-rendering:pixelated}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  image-rendering:pixelated;
+}
+
 :root{
-  --ink:#1a1020;--gold:#f5c842;--red:#c43040;--red2:#8a1a28;
-  --paper:#fdf0d0;--paper2:#f5d89a;--jade:#2a7a5a;--jade2:#1a5a3a;
-  --sky:#5ba8d8;--sky2:#3a7aaa;--mist:#d8eef8;
-  --cream:#fff8e8;--brown:#6a3a1a;--fur:#e8e0d0;
+  --bg:#0b0812;
+  --bg2:#140d1d;
+  --ink:#120b18;
+  --deep:#1a1024;
+  --deep2:#22122c;
+  --paper:#f7e5bf;
+  --paper2:#eecb8a;
+  --gold:#f4c44f;
+  --gold2:#b9831e;
+  --red:#c53a48;
+  --red2:#8a1e2a;
+  --red3:#5f1019;
+  --cream:#fff7e8;
+  --muted:#ecd7b2;
+  --jade:#2d6e59;
+  --jade2:#1b4638;
+  --purple:#4e2a67;
+  --purple2:#2f163f;
+  --line:#2a1936;
+  --glow:rgba(255,90,90,.22);
 }
-html,body{width:100%;height:100%;background:#0d0a14;font-family:'Press Start 2P',monospace;overflow:hidden;color:var(--cream)}
-body{display:flex;align-items:center;justify-content:center}
+
+html,body{
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle at top, #1c1228 0%, #0d0914 55%, #07050b 100%);
+  overflow:hidden;
+  color:var(--cream);
+  font-family:'Press Start 2P', monospace;
+}
+
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
 .game{
-  position:relative;width:min(100vw,1100px);aspect-ratio:16/9;
-  overflow:hidden;background:#5ba8d8;
-  border:8px solid var(--ink);box-shadow:0 0 0 4px #3a2050,0 24px 80px rgba(0,0,0,.7);
+  position:relative;
+  width:min(100vw,1180px);
+  aspect-ratio:16/9;
+  overflow:hidden;
+  border:8px solid var(--ink);
+  box-shadow:
+    0 0 0 4px #3a2050,
+    0 0 0 8px #120916,
+    0 30px 90px rgba(0,0,0,.65);
+  background:#0f0b16;
 }
-@media(max-width:700px){.game{width:100vw;height:100vh;aspect-ratio:auto;border:0}}
 
-/* BG layers */
-.bg-sky{position:absolute;inset:0;background:linear-gradient(180deg,#2a4070 0%,#3a6098 30%,#5ba8d8 55%,#5ba8d8 55%,#3a7848 55%,#2a5835 100%);z-index:0}
-.bg-mountain{position:absolute;bottom:42%;z-index:1}
-.bg-mountain svg{display:block}
-.bg-ground{position:absolute;bottom:0;left:0;right:0;height:42%;background:linear-gradient(180deg,#3a7848 0%,#2a5835 100%);z-index:1}
-.bg-ground::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,#4a9858 0 8px,#3a7848 8px 16px)}
-.cloud{position:absolute;z-index:2}
-.lantern-deco{position:absolute;z-index:3}
-
-/* Screens */
-.screen{position:absolute;inset:0;display:none;z-index:10}
-.screen.active{display:flex;flex-direction:column}
-
-/* ===== START SCREEN ===== */
-#startScreen{align-items:center;justify-content:center}
-.start-inner{display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;z-index:4}
-.game-title{text-align:center;line-height:1.4}
-.game-title .line1{font-size:clamp(10px,2vw,18px);color:var(--gold);text-shadow:3px 3px 0 #7a4a00;letter-spacing:3px;display:block;margin-bottom:8px}
-.game-title .line2{font-size:clamp(22px,5vw,52px);color:var(--cream);text-shadow:4px 4px 0 var(--ink),8px 8px 0 rgba(0,0,0,.3);display:block;line-height:1.2}
-.hearts-row{font-size:22px;color:#e84060;text-shadow:2px 2px 0 #6a0020;letter-spacing:10px}
-.pixel-btn{
-  font-family:'Press Start 2P',monospace;cursor:pointer;
-  background:linear-gradient(180deg,#e84060,#a82040);
-  color:#fff;font-size:clamp(10px,1.8vw,16px);
-  border:0;outline:4px solid var(--ink);outline-offset:-4px;
-  box-shadow:4px 4px 0 var(--red2);
-  padding:12px 28px;text-shadow:2px 2px 0 var(--red2);
-  text-transform:uppercase;transition:transform .1s;
+@media(max-width:820px){
+  .game{
+    width:100vw;
+    height:100vh;
+    aspect-ratio:auto;
+    border:0;
+    box-shadow:none;
+  }
 }
-.pixel-btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--red2)}
-.pixel-btn.gold-btn{background:linear-gradient(180deg,var(--gold),#c89a20);color:var(--ink);text-shadow:none;box-shadow:4px 4px 0 #8a5a00}
-.pixel-btn.gold-btn:hover{box-shadow:2px 2px 0 #8a5a00}
 
-/* ===== READY SCREEN ===== */
-#readyScreen{flex-direction:row;align-items:stretch}
-.ready-chibi-side{flex:0 0 38%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;position:relative;z-index:4}
-.ready-dialog-side{flex:1;display:flex;align-items:center;justify-content:flex-start;padding:28px 28px 28px 0;z-index:4}
-.paper-box{
-  background:linear-gradient(180deg,rgba(253,240,208,.97),rgba(245,216,154,.97));
-  border:5px solid var(--ink);box-shadow:8px 8px 0 rgba(0,0,0,.4);
-  padding:22px 24px;color:var(--ink);max-width:420px;
+/* ================= BG ================= */
+
+.bg{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:
+    radial-gradient(circle at 70% 20%, rgba(255,120,80,.12), transparent 20%),
+    radial-gradient(circle at 18% 18%, rgba(255,80,80,.09), transparent 16%),
+    linear-gradient(180deg, #130d1c 0%, #1b1330 20%, #15112a 45%, #100d1b 60%, #0e0b14 100%);
+}
+
+.bg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(transparent 0 86%, rgba(0,0,0,.28) 86% 100%);
+  pointer-events:none;
+}
+
+.moon{
+  position:absolute;
+  width:86px;
+  height:86px;
+  border-radius:50%;
+  top:52px;
+  right:110px;
+  background:radial-gradient(circle at 35% 35%, #fff7da 0%, #f0d18a 46%, #d3a351 72%, #8f5a1d 100%);
+  box-shadow:0 0 40px rgba(245,200,90,.35);
+  opacity:.95;
+}
+
+.mist{
+  position:absolute;
+  left:0; right:0; bottom:135px;
+  height:130px;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(255,255,255,.03) 20%, rgba(210,220,230,.06) 45%, rgba(10,10,20,.0) 100%);
+  filter:blur(2px);
+}
+
+.cityline{
+  position:absolute;
+  inset:auto 0 105px 0;
+  height:240px;
+  background:
+    linear-gradient(180deg, transparent 0%, transparent 65%, #0b0811 65% 100%);
+  z-index:1;
+}
+.cityline::before{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:210px;
+  background:
+    polygon(0 100%);
+  clip-path: polygon(
+    0 100%, 0 70%, 5% 70%, 7% 48%, 9% 70%, 14% 70%, 16% 38%, 18% 70%, 25% 70%, 27% 44%, 29% 70%, 
+    34% 70%, 36% 52%, 38% 70%, 44% 70%, 46% 26%, 48% 70%, 53% 70%, 55% 40%, 57% 70%, 
+    62% 70%, 64% 20%, 66% 70%, 72% 70%, 74% 46%, 76% 70%, 82% 70%, 84% 34%, 86% 70%, 
+    91% 70%, 93% 50%, 95% 70%, 100% 70%, 100% 100%
+  );
+  background:#09070d;
+  opacity:.9;
+}
+
+.pagoda{
+  position:absolute;
+  right:60px;
+  bottom:118px;
+  width:190px;
+  height:290px;
+  z-index:2;
+  opacity:.34;
+}
+.pagoda::before,
+.pagoda::after{
+  content:"";
+  position:absolute;
+  left:0; right:0;
+}
+.pagoda::before{
+  inset:0;
+  background:
+    linear-gradient(#0f0a14, #0f0a14);
+  clip-path: polygon(
+    40% 0, 60% 0, 62% 8%, 75% 12%, 67% 14%, 70% 18%, 60% 18%, 62% 24%, 77% 28%, 67% 30%, 70% 34%, 
+    58% 34%, 60% 40%, 76% 44%, 66% 46%, 69% 50%, 56% 50%, 56% 100%, 44% 100%, 44% 50%, 
+    31% 50%, 34% 46%, 24% 44%, 40% 40%, 42% 34%, 30% 34%, 33% 30%, 23% 28%, 38% 24%, 40% 18%,
+    30% 18%, 33% 14%, 25% 12%, 38% 8%
+  );
+}
+.pagoda::after{
+  bottom:0;
+  left:70px;
+  right:70px;
+  height:110px;
+  background:#0b0811;
+}
+
+.ground{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:130px;
+  background:
+    linear-gradient(180deg, #241225 0%, #150d16 15%, #0f0b14 100%);
+  border-top:4px solid #2f1832;
+  z-index:2;
+}
+.ground::before{
+  content:"";
+  position:absolute;
+  left:0; right:0; top:0;
+  height:6px;
+  background:repeating-linear-gradient(90deg,#3d2140 0 14px,#241228 14px 28px);
+}
+
+/* lanterns */
+.lantern{
+  position:absolute;
+  z-index:4;
+  filter:drop-shadow(0 0 16px rgba(255,92,92,.25));
+}
+
+.lantern.big{ left:42px; top:82px; }
+.lantern.small1{ left:110px; top:160px; transform:scale(.85); opacity:.9; }
+.lantern.small2{ right:56px; top:124px; transform:scale(.88); }
+.lantern.small3{ right:155px; top:72px; transform:scale(.72); opacity:.85; }
+
+.cloud{
+  position:absolute;
+  opacity:.55;
+  z-index:1;
+}
+.cloud.c1{ left:160px; top:64px; }
+.cloud.c2{ left:340px; top:118px; transform:scale(.8); opacity:.35; }
+.cloud.c3{ right:250px; top:84px; transform:scale(.75); }
+
+/* corner ornaments */
+.corner{
+  position:absolute;
+  width:88px;
+  height:88px;
+  z-index:5;
+  opacity:.75;
+}
+.corner.tl{ top:12px; left:12px; }
+.corner.tr{ top:12px; right:12px; transform:scaleX(-1); }
+.corner.bl{ bottom:12px; left:12px; transform:scaleY(-1); }
+.corner.br{ bottom:12px; right:12px; transform:scale(-1); }
+
+.screen{
+  position:absolute;
+  inset:0;
+  display:none;
+  z-index:10;
+}
+.screen.active{ display:flex; }
+
+/* ================= generic UI ================= */
+
+.topbar{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 18px;
+  background:linear-gradient(180deg, rgba(23,15,30,.95), rgba(13,10,18,.86));
+  border-bottom:4px solid #2a1832;
+  z-index:30;
+}
+
+.badge{
+  font-size:clamp(7px, 0.9vw, 10px);
+  color:var(--gold);
+  text-shadow:2px 2px 0 #5d3b00;
+  line-height:1.6;
+}
+
+.panel{
+  background:
+    linear-gradient(180deg, rgba(247,229,191,.98), rgba(238,203,138,.96));
+  color:#2c1a22;
+  border:5px solid var(--ink);
+  box-shadow:
+    8px 8px 0 rgba(0,0,0,.42),
+    0 0 0 4px rgba(92,44,56,.16) inset;
   position:relative;
 }
-.paper-box::before,.paper-box::after{
-  content:'';position:absolute;width:36px;height:36px;
-  background:var(--red);border:4px solid var(--ink);top:-14px;
-}
-.paper-box::before{left:-14px}.paper-box::after{right:-14px}
-.paper-box h2{font-size:clamp(14px,2.8vw,26px);color:var(--red2);margin-bottom:14px;line-height:1.4}
-.paper-box p{font-size:clamp(7px,1.1vw,11px);line-height:1.9;margin-bottom:18px}
-.btn-row{display:flex;gap:14px;flex-wrap:wrap}
 
-/* ===== GAME SCREEN ===== */
-#gameScreen{flex-direction:column}
-.topbar{
-  position:relative;z-index:4;display:flex;justify-content:space-between;align-items:center;
-  padding:10px 18px;background:rgba(10,8,20,.75);border-bottom:4px solid var(--ink);
-  flex-shrink:0;
+.panel::before,
+.panel::after{
+  content:"";
+  position:absolute;
+  top:-16px;
+  width:34px;
+  height:34px;
+  background:var(--red);
+  border:4px solid var(--ink);
 }
-.topbar-badge{font-size:clamp(7px,1.1vw,11px);color:var(--gold);text-shadow:2px 2px 0 #5a3a00}
-.game-area{flex:1;display:flex;align-items:center;justify-content:center;gap:28px;padding:14px 24px;position:relative;z-index:4}
-.board-wrap{}
+.panel::before{ left:-16px; }
+.panel::after{ right:-16px; }
+
+.pixel-btn{
+  font-family:'Press Start 2P', monospace;
+  cursor:pointer;
+  border:0;
+  padding:13px 24px;
+  font-size:clamp(8px,1vw,12px);
+  text-transform:uppercase;
+  color:#fff;
+  background:linear-gradient(180deg, #e65a69 0%, #b72636 55%, #8a1d2b 100%);
+  outline:4px solid var(--ink);
+  outline-offset:-4px;
+  box-shadow:4px 4px 0 #531019;
+  text-shadow:2px 2px 0 #531019;
+  transition:transform .08s ease, box-shadow .08s ease;
+}
+
+.pixel-btn:hover{
+  transform:translate(2px,2px);
+  box-shadow:2px 2px 0 #531019;
+}
+
+.pixel-btn.gold{
+  color:#25160f;
+  text-shadow:none;
+  background:linear-gradient(180deg, #ffd96b 0%, #e0b039 58%, #b8831c 100%);
+  box-shadow:4px 4px 0 #6c4704;
+}
+
+.pixel-btn.gold:hover{
+  box-shadow:2px 2px 0 #6c4704;
+}
+
+.title-big{
+  text-align:center;
+  line-height:1.28;
+  text-transform:uppercase;
+}
+
+.title-big .small{
+  display:block;
+  font-size:clamp(9px, 1.2vw, 14px);
+  color:var(--gold);
+  text-shadow:2px 2px 0 #5f3f0c;
+  letter-spacing:3px;
+  margin-bottom:14px;
+}
+
+.title-big .main{
+  display:block;
+  font-size:clamp(21px, 4.5vw, 54px);
+  color:#fff7eb;
+  text-shadow:
+    3px 3px 0 #4f1d2b,
+    6px 6px 0 rgba(0,0,0,.34);
+  line-height:1.28;
+  letter-spacing:2px;
+}
+
+.hearts{
+  color:#f24c66;
+  font-size:22px;
+  text-shadow:2px 2px 0 #620f20;
+  letter-spacing:7px;
+}
+
+.subtitle-red{
+  color:#d33a49;
+  text-shadow:2px 2px 0 #4b1017;
+  font-size:clamp(7px,0.9vw,10px);
+  line-height:1.9;
+}
+
+/* image token */
+.token-wrap{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px;
+}
+
+.token-wrap::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border:4px solid #2b1630;
+  box-shadow:0 0 0 4px rgba(85,36,59,.35) inset;
+  background:
+    linear-gradient(180deg, rgba(84,25,38,.18), rgba(0,0,0,.06));
+}
+
+.token-wrap img{
+  display:block;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  position:relative;
+  z-index:2;
+  filter:drop-shadow(0 10px 16px rgba(0,0,0,.38));
+}
+
+.sparkles{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:3;
+}
+
+.sparkles span{
+  position:absolute;
+  color:var(--gold);
+  text-shadow:2px 2px 0 #5d3a06;
+  font-size:18px;
+  animation:blink 1.2s steps(2) infinite;
+}
+
+.sparkles span:nth-child(1){ top:10%; right:8%; }
+.sparkles span:nth-child(2){ left:8%; top:38%; animation-delay:.35s; }
+.sparkles span:nth-child(3){ right:14%; bottom:10%; animation-delay:.7s; }
+
+@keyframes blink{
+  50%{ opacity:.18; }
+}
+
+/* ================= start ================= */
+
+#startScreen{
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+}
+
+.start-inner{
+  position:relative;
+  z-index:20;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+}
+
+.start-deco-row{
+  display:flex;
+  gap:20px;
+  align-items:center;
+  margin-top:2px;
+}
+
+.mini-orn{
+  width:54px;
+  height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:4px solid var(--ink);
+  background:linear-gradient(180deg, #5c2133, #2c1320);
+  box-shadow:4px 4px 0 rgba(0,0,0,.35);
+}
+
+.footer-phrase{
+  margin-top:8px;
+  color:#dfb351;
+  font-size:clamp(6px,.8vw,9px);
+  text-shadow:2px 2px 0 #523400;
+  letter-spacing:2px;
+  text-align:center;
+  line-height:1.8;
+}
+
+/* ================= ready ================= */
+
+#readyScreen{
+  flex-direction:column;
+}
+
+.ready-body{
+  flex:1;
+  padding:96px 34px 30px;
+  display:grid;
+  grid-template-columns: minmax(240px, 380px) minmax(320px, 1fr);
+  gap:28px;
+  align-items:center;
+  position:relative;
+  z-index:20;
+}
+
+.ready-visual{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.ready-frame{
+  width:min(100%, 340px);
+  min-height:370px;
+  padding:18px;
+  background:
+    linear-gradient(180deg, rgba(36,16,28,.92), rgba(16,10,18,.9));
+  border:5px solid #2d1832;
+  box-shadow:
+    8px 8px 0 rgba(0,0,0,.42),
+    0 0 0 4px rgba(170,57,76,.14) inset;
+  position:relative;
+}
+
+.ready-frame::before{
+  content:"寿";
+  position:absolute;
+  top:10px;
+  left:12px;
+  font-size:20px;
+  color:rgba(244,196,79,.85);
+  text-shadow:2px 2px 0 #553500;
+}
+
+.ready-frame::after{
+  content:"喜";
+  position:absolute;
+  top:10px;
+  right:12px;
+  font-size:20px;
+  color:rgba(211,58,73,.92);
+  text-shadow:2px 2px 0 #4d1118;
+}
+
+.ready-cake{
+  width:100%;
+  height:100%;
+  min-height:330px;
+  position:relative;
+}
+
+.ready-dialog{
+  padding:24px 26px 24px;
+  max-width:560px;
+}
+
+.ready-dialog h2{
+  font-size:clamp(15px, 2.2vw, 28px);
+  color:var(--red2);
+  margin-bottom:16px;
+  line-height:1.4;
+}
+
+.ready-dialog p{
+  font-size:clamp(7px, .95vw, 11px);
+  line-height:2;
+  margin-bottom:18px;
+}
+
+.btn-row{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+/* ================= game ================= */
+
+#gameScreen{
+  flex-direction:column;
+}
+
+.game-body{
+  flex:1;
+  padding:96px 28px 30px;
+  display:grid;
+  grid-template-columns: minmax(300px, 380px) minmax(250px, 320px);
+  justify-content:center;
+  align-items:center;
+  gap:28px;
+  position:relative;
+  z-index:20;
+}
+
 .ttt-board{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:8px;padding:12px;
-  background:rgba(253,240,208,.95);border:6px solid var(--ink);
-  box-shadow:8px 8px 0 rgba(0,0,0,.4);
-  width:min(44vw,320px);aspect-ratio:1;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  width:min(44vw, 330px);
+  aspect-ratio:1;
+  padding:12px;
+  border:6px solid var(--ink);
+  background:
+    linear-gradient(180deg, rgba(31,14,33,.98), rgba(15,8,18,.95));
+  box-shadow:
+    8px 8px 0 rgba(0,0,0,.45),
+    0 0 0 4px rgba(120,33,55,.22) inset;
 }
+
 .cell{
-  cursor:pointer;background:linear-gradient(180deg,#c43040,#8a1a28);
-  border:4px solid var(--ink);font-size:clamp(26px,4.5vw,52px);
-  color:var(--cream);text-shadow:2px 2px 0 var(--ink);
-  box-shadow:inset -4px -4px 0 rgba(0,0,0,.3);
-  transition:background .1s;
+  cursor:pointer;
+  border:4px solid var(--ink);
+  background:linear-gradient(180deg, #cc4050 0%, #9a2230 65%, #6b1520 100%);
+  color:var(--cream);
+  text-shadow:2px 2px 0 #2f0b13;
+  box-shadow:inset -4px -4px 0 rgba(0,0,0,.28);
+  font-size:clamp(26px, 4vw, 48px);
+  font-family:'Press Start 2P', monospace;
 }
-.cell:hover:not(:disabled){background:linear-gradient(180deg,#e86070,#c43040)}
-.cell:disabled{cursor:default}
-.cell.x-cell{background:linear-gradient(180deg,#2a7a5a,#1a5a3a)}
-.cell.o-cell{background:linear-gradient(180deg,#5a3a7a,#3a1a5a)}
-.game-panel{flex:0 0 auto;max-width:280px}
-.game-panel h3{font-size:clamp(8px,1.3vw,12px);color:var(--gold);margin-bottom:10px;text-transform:uppercase}
-.game-panel p{font-size:clamp(7px,1vw,10px);line-height:2;color:var(--paper);min-height:60px}
 
-/* ===== WIN SCREEN ===== */
-#winScreen{flex-direction:row;align-items:stretch}
-.win-chibi-side{flex:0 0 44%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;gap:-20px;position:relative;z-index:4}
-.win-msg-side{flex:1;display:flex;align-items:center;padding:28px 28px 28px 8px;z-index:4}
-
-/* ===== FINAL SCREEN ===== */
-#finalScreen{align-items:center;justify-content:center}
-.final-inner{display:flex;flex-direction:column;align-items:center;gap:14px;z-index:4;position:relative;padding:20px}
-.final-msg{
-  background:rgba(253,240,208,.97);border:5px solid var(--ink);
-  box-shadow:8px 8px 0 rgba(0,0,0,.4);
-  color:var(--ink);padding:20px 24px;max-width:540px;text-align:center;
+.cell:hover:not(:disabled){
+  background:linear-gradient(180deg, #ea6270 0%, #c43143 65%, #8b1e2f 100%);
 }
-.final-msg p{font-size:clamp(7px,1.1vw,10px);line-height:2.2}
 
-/* ===== CHIBI SVG ===== */
-.chibi-container{position:relative;display:inline-block}
-.sparkle{position:absolute;color:var(--gold);font-size:18px;text-shadow:2px 2px 0 #7a4a00;animation:sp 1.2s steps(2) infinite}
-.sparkle.s1{right:-16px;top:20px}.sparkle.s2{left:-20px;top:80px;animation-delay:.4s}.sparkle.s3{right:-10px;top:120px;animation-delay:.7s}
-@keyframes sp{50%{opacity:.15}}
+.cell:disabled{
+  cursor:default;
+}
+
+.cell.x-cell{
+  background:linear-gradient(180deg, #e0b447 0%, #c1851f 60%, #8c5e12 100%);
+  color:#fff8e6;
+  text-shadow:2px 2px 0 #533806;
+}
+
+.cell.o-cell{
+  background:linear-gradient(180deg, #6c468d 0%, #4a2b67 60%, #321741 100%);
+}
+
+.game-panel{
+  padding:22px 22px 20px;
+}
+
+.game-panel h3{
+  font-size:clamp(8px,1vw,12px);
+  color:var(--red2);
+  margin-bottom:12px;
+  line-height:1.8;
+}
+
+.game-panel p{
+  font-size:clamp(7px,.9vw,10px);
+  line-height:2;
+  color:#fff6e7;
+  background:linear-gradient(180deg, rgba(39,18,28,.95), rgba(25,10,18,.95));
+  border:4px solid var(--ink);
+  padding:14px;
+  min-height:100px;
+  margin-bottom:14px;
+  box-shadow:inset 0 0 0 3px rgba(187,74,92,.14);
+}
+
+/* ================= win ================= */
+
+#winScreen{
+  flex-direction:column;
+}
+
+.win-body{
+  flex:1;
+  padding:96px 30px 28px;
+  display:grid;
+  grid-template-columns:minmax(260px, 420px) minmax(320px, 1fr);
+  gap:26px;
+  align-items:center;
+  position:relative;
+  z-index:20;
+}
+
+.win-cakes{
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  gap:0;
+  min-height:340px;
+}
+
+.win-cakes .token-wrap:nth-child(1){
+  transform:translateX(26px) scale(.78);
+  z-index:2;
+}
+
+.win-cakes .token-wrap:nth-child(2){
+  z-index:5;
+  transform:scale(1.02);
+}
+
+.win-cakes .token-wrap:nth-child(3){
+  transform:translateX(-26px) scale(.78);
+  z-index:2;
+}
+
+.cake-card{
+  width:180px;
+  height:260px;
+  background:linear-gradient(180deg, rgba(34,14,26,.94), rgba(15,8,18,.93));
+  border:5px solid #2f1832;
+  box-shadow:
+    8px 8px 0 rgba(0,0,0,.4),
+    0 0 0 4px rgba(170,60,79,.12) inset;
+}
+
+.msg-panel{
+  padding:24px 24px 22px;
+  max-width:580px;
+}
+
+.msg-panel h2{
+  font-size:clamp(13px, 1.8vw, 24px);
+  color:var(--red2);
+  margin-bottom:16px;
+  line-height:1.5;
+}
+
+.msg-panel p{
+  font-size:clamp(7px, .92vw, 10px);
+  line-height:2;
+  margin-bottom:16px;
+}
+
+/* ================= final ================= */
+
+#finalScreen{
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+}
+
+.final-inner{
+  position:relative;
+  z-index:20;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+  max-width:820px;
+}
+
+.final-cakes{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:0;
+  margin:8px 0 4px;
+}
+
+.final-cakes .token-wrap:nth-child(1){
+  transform:translateX(22px) scale(.82);
+}
+.final-cakes .token-wrap:nth-child(2){
+  transform:scale(1.04);
+}
+.final-cakes .token-wrap:nth-child(3){
+  transform:translateX(-22px) scale(.82);
+}
+
+.final-card{
+  padding:22px 24px;
+  text-align:center;
+  max-width:640px;
+}
+
+.final-card p{
+  font-size:clamp(7px,.92vw,10px);
+  line-height:2.2;
+}
+
+/* ================= responsive ================= */
+
+@media(max-width:950px){
+  .ready-body,
+  .win-body,
+  .game-body{
+    grid-template-columns:1fr;
+    justify-items:center;
+  }
+
+  .ready-frame,
+  .cake-card{
+    width:min(88vw, 340px);
+  }
+
+  .ready-dialog,
+  .msg-panel,
+  .game-panel{
+    max-width:min(90vw, 560px);
+  }
+
+  .ttt-board{
+    width:min(84vw, 330px);
+  }
+}
+
+@media(max-width:700px){
+  .topbar{
+    height:auto;
+    min-height:64px;
+    padding:12px;
+    gap:8px;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .ready-body,
+  .win-body,
+  .game-body{
+    padding-top:92px;
+    gap:18px;
+  }
+
+  .ready-frame{
+    min-height:290px;
+  }
+
+  .ready-cake{
+    min-height:250px;
+  }
+
+  .win-cakes{
+    min-height:250px;
+  }
+
+  .final-cakes .token-wrap,
+  .win-cakes .token-wrap{
+    transform:none !important;
+  }
+
+  .final-cakes,
+  .win-cakes{
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .btn-row{
+    gap:10px;
+  }
+}
 </style>
 </head>
 <body>
-<div class="game" id="game">
-  <!-- BG -->
-  <div class="bg-sky"></div>
-  <div class="bg-mountain" style="left:-20px">
-    <svg width="320" height="160" viewBox="0 0 320 160"><polygon points="0,160 80,40 140,90 190,20 320,160" fill="rgba(200,220,240,.4)" stroke="none"/></svg>
+<div class="game">
+  <!-- background -->
+  <div class="bg"></div>
+  <div class="moon"></div>
+  <div class="mist"></div>
+  <div class="cityline"></div>
+  <div class="pagoda"></div>
+  <div class="ground"></div>
+
+  <!-- clouds -->
+  <div class="cloud c1">
+    <svg width="98" height="34" viewBox="0 0 98 34">
+      <rect x="6" y="16" width="86" height="14" fill="#dce8f0"/>
+      <rect x="18" y="8" width="44" height="12" fill="#dce8f0"/>
+      <rect x="28" y="2" width="30" height="10" fill="#dce8f0"/>
+    </svg>
   </div>
-  <div class="bg-mountain" style="right:-40px">
-    <svg width="280" height="140" viewBox="0 0 280 140"><polygon points="0,140 90,30 170,80 280,140" fill="rgba(180,210,230,.35)" stroke="none"/></svg>
+  <div class="cloud c2">
+    <svg width="72" height="26" viewBox="0 0 72 26">
+      <rect x="4" y="13" width="64" height="10" fill="#dce8f0"/>
+      <rect x="12" y="6" width="34" height="10" fill="#dce8f0"/>
+    </svg>
   </div>
-  <div class="bg-ground"></div>
+  <div class="cloud c3">
+    <svg width="82" height="28" viewBox="0 0 82 28">
+      <rect x="4" y="14" width="74" height="10" fill="#dce8f0"/>
+      <rect x="18" y="8" width="38" height="10" fill="#dce8f0"/>
+      <rect x="30" y="2" width="24" height="8" fill="#dce8f0"/>
+    </svg>
+  </div>
 
-  <!-- Clouds pixel -->
-  <div class="cloud" style="top:10%;left:8%"><svg width="96" height="32" viewBox="0 0 96 32"><rect x="8" y="16" width="80" height="16" fill="#dff0f8"/><rect x="16" y="8" width="48" height="16" fill="#dff0f8"/><rect x="28" y="0" width="28" height="12" fill="#dff0f8"/></svg></div>
-  <div class="cloud" style="top:8%;right:14%"><svg width="72" height="24" viewBox="0 0 72 24"><rect x="4" y="12" width="64" height="12" fill="#dff0f8"/><rect x="12" y="4" width="40" height="14" fill="#dff0f8"/><rect x="22" y="0" width="22" height="10" fill="#dff0f8"/></svg></div>
-  <div class="cloud" style="top:22%;left:40%"><svg width="56" height="20" viewBox="0 0 56 20"><rect x="4" y="10" width="48" height="10" fill="rgba(223,240,248,.8)"/><rect x="10" y="4" width="32" height="12" fill="rgba(223,240,248,.8)"/></svg></div>
+  <!-- lanterns -->
+  <div class="lantern big">
+    <svg width="52" height="98" viewBox="0 0 52 98">
+      <rect x="21" y="0" width="10" height="9" fill="#f4c44f"/>
+      <rect x="8" y="8" width="36" height="60" rx="12" fill="#b52436" stroke="#120b18" stroke-width="5"/>
+      <rect x="15" y="14" width="22" height="48" rx="8" fill="#e25361" opacity=".35"/>
+      <text x="26" y="43" text-anchor="middle" font-size="18" fill="#ffe8bd" font-family="serif">寿</text>
+      <rect x="21" y="68" width="10" height="14" fill="#f4c44f"/>
+      <rect x="23" y="82" width="6" height="12" fill="#f4c44f"/>
+    </svg>
+  </div>
 
-  <!-- Deco lanterns -->
-  <div class="lantern-deco" style="left:28px;top:15%"><svg width="28" height="52" viewBox="0 0 28 52"><rect x="10" y="0" width="8" height="6" fill="#f5c842" rx="1"/><rect x="4" y="6" width="20" height="36" rx="6" fill="#c43040"/><rect x="8" y="6" width="12" height="36" rx="4" fill="#e84060" opacity=".5"/><rect x="10" y="42" width="8" height="10" fill="#f5c842"/><rect x="12" y="50" width="4" height="6" fill="#f5c842"/></svg></div>
-  <div class="lantern-deco" style="right:32px;top:12%"><svg width="28" height="52" viewBox="0 0 28 52"><rect x="10" y="0" width="8" height="6" fill="#f5c842" rx="1"/><rect x="4" y="6" width="20" height="36" rx="6" fill="#c43040"/><rect x="8" y="6" width="12" height="36" rx="4" fill="#e84060" opacity=".5"/><rect x="10" y="42" width="8" height="10" fill="#f5c842"/><rect x="12" y="50" width="4" height="6" fill="#f5c842"/></svg></div>
+  <div class="lantern small1">
+    <svg width="38" height="72" viewBox="0 0 38 72">
+      <rect x="15" y="0" width="8" height="7" fill="#f4c44f"/>
+      <rect x="6" y="7" width="26" height="42" rx="10" fill="#b52436" stroke="#120b18" stroke-width="4"/>
+      <text x="19" y="31" text-anchor="middle" font-size="13" fill="#ffe8bd" font-family="serif">喜</text>
+      <rect x="15" y="49" width="8" height="10" fill="#f4c44f"/>
+      <rect x="16" y="58" width="6" height="10" fill="#f4c44f"/>
+    </svg>
+  </div>
 
-  <!-- ===== START SCREEN ===== -->
+  <div class="lantern small2">
+    <svg width="38" height="72" viewBox="0 0 38 72">
+      <rect x="15" y="0" width="8" height="7" fill="#f4c44f"/>
+      <rect x="6" y="7" width="26" height="42" rx="10" fill="#b52436" stroke="#120b18" stroke-width="4"/>
+      <text x="19" y="31" text-anchor="middle" font-size="13" fill="#ffe8bd" font-family="serif">福</text>
+      <rect x="15" y="49" width="8" height="10" fill="#f4c44f"/>
+      <rect x="16" y="58" width="6" height="10" fill="#f4c44f"/>
+    </svg>
+  </div>
+
+  <div class="lantern small3">
+    <svg width="34" height="64" viewBox="0 0 34 64">
+      <rect x="13" y="0" width="8" height="6" fill="#f4c44f"/>
+      <rect x="5" y="6" width="24" height="38" rx="10" fill="#b52436" stroke="#120b18" stroke-width="4"/>
+      <text x="17" y="27" text-anchor="middle" font-size="11" fill="#ffe8bd" font-family="serif">寿</text>
+      <rect x="13" y="44" width="8" height="8" fill="#f4c44f"/>
+      <rect x="14" y="52" width="6" height="8" fill="#f4c44f"/>
+    </svg>
+  </div>
+
+  <!-- corners -->
+  <div class="corner tl">
+    <svg width="88" height="88" viewBox="0 0 88 88">
+      <path d="M6 70 V6 H70" fill="none" stroke="#5a2336" stroke-width="8"/>
+      <path d="M14 62 V14 H62" fill="none" stroke="#d04555" stroke-width="4"/>
+      <path d="M24 52 V24 H52" fill="none" stroke="#f4c44f" stroke-width="4"/>
+    </svg>
+  </div>
+  <div class="corner tr">
+    <svg width="88" height="88" viewBox="0 0 88 88">
+      <path d="M6 70 V6 H70" fill="none" stroke="#5a2336" stroke-width="8"/>
+      <path d="M14 62 V14 H62" fill="none" stroke="#d04555" stroke-width="4"/>
+      <path d="M24 52 V24 H52" fill="none" stroke="#f4c44f" stroke-width="4"/>
+    </svg>
+  </div>
+  <div class="corner bl">
+    <svg width="88" height="88" viewBox="0 0 88 88">
+      <path d="M6 70 V6 H70" fill="none" stroke="#5a2336" stroke-width="8"/>
+      <path d="M14 62 V14 H62" fill="none" stroke="#d04555" stroke-width="4"/>
+      <path d="M24 52 V24 H52" fill="none" stroke="#f4c44f" stroke-width="4"/>
+    </svg>
+  </div>
+  <div class="corner br">
+    <svg width="88" height="88" viewBox="0 0 88 88">
+      <path d="M6 70 V6 H70" fill="none" stroke="#5a2336" stroke-width="8"/>
+      <path d="M14 62 V14 H62" fill="none" stroke="#d04555" stroke-width="4"/>
+      <path d="M24 52 V24 H52" fill="none" stroke="#f4c44f" stroke-width="4"/>
+    </svg>
+  </div>
+
+  <!-- ================= START ================= -->
   <section class="screen active" id="startScreen">
     <div class="start-inner">
-      <div class="hearts-row">♥ ♥ ♥ ♥ ♥</div>
-      <div class="game-title">
-        <span class="line1">Kornubula's Birthday Quest</span>
-        <span class="line2">BIRTHDAY<br>GAME ARCADE</span>
+      <div class="hearts">♥ ♥ ♥ ♥ ♥</div>
+      <div class="title-big">
+        <span class="small">Kornubula's Birthday Quest</span>
+        <span class="main">Birthday<br>Game Arcade</span>
       </div>
-      <!-- deco items -->
-      <div style="display:flex;gap:28px;align-items:center;margin:4px 0">
-        <!-- cake pixel -->
-        <svg width="54" height="54" viewBox="0 0 54 54"><rect x="4" y="28" width="46" height="22" fill="#e88090" stroke="#1a1020" stroke-width="4"/><rect x="10" y="22" width="34" height="12" fill="#f0b0c0" stroke="#1a1020" stroke-width="3"/><rect x="24" y="8" width="6" height="16" fill="#f5c842" stroke="#1a1020" stroke-width="3"/><rect x="22" y="4" width="10" height="6" fill="#ff6030" stroke="#1a1020" stroke-width="2"/><rect x="8" y="36" width="38" height="4" fill="#c06070" stroke="none"/></svg>
-        <!-- envelope pixel -->
-        <svg width="54" height="42" viewBox="0 0 54 42"><rect x="2" y="2" width="50" height="38" fill="#ffeaf0" stroke="#1a1020" stroke-width="4"/><polygon points="2,2 27,24 52,2" fill="none" stroke="#1a1020" stroke-width="3"/><text x="27" y="36" text-anchor="middle" font-size="14" fill="#e84060">♥</text></svg>
+
+      <div class="start-deco-row">
+        <div class="mini-orn">
+          <svg width="34" height="34" viewBox="0 0 34 34">
+            <rect x="3" y="14" width="28" height="14" fill="#e18295" stroke="#120b18" stroke-width="3"/>
+            <rect x="8" y="9" width="18" height="8" fill="#f2b5c0" stroke="#120b18" stroke-width="2"/>
+            <rect x="15" y="3" width="4" height="7" fill="#f4c44f" stroke="#120b18" stroke-width="2"/>
+            <rect x="14" y="1" width="6" height="3" fill="#ff7842" stroke="#120b18" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="mini-orn">
+          <svg width="34" height="34" viewBox="0 0 34 34">
+            <rect x="3" y="4" width="28" height="22" fill="#fff0f3" stroke="#120b18" stroke-width="3"/>
+            <path d="M3 4 L17 17 L31 4" fill="none" stroke="#120b18" stroke-width="2"/>
+            <text x="17" y="28" text-anchor="middle" font-size="10" fill="#d33a49">♥</text>
+          </svg>
+        </div>
+        <div class="mini-orn">
+          <svg width="34" height="34" viewBox="0 0 34 34">
+            <rect x="13" y="2" width="8" height="5" fill="#f4c44f"/>
+            <rect x="8" y="6" width="18" height="18" rx="5" fill="#c53a48" stroke="#120b18" stroke-width="3"/>
+            <text x="17" y="18" text-anchor="middle" font-size="9" fill="#ffe6b6">寿</text>
+            <rect x="13" y="24" width="8" height="5" fill="#f4c44f"/>
+          </svg>
+        </div>
       </div>
-      <button class="pixel-btn" id="startBtn">▶ START</button>
+
+      <button class="pixel-btn" id="startBtn">▶ Start</button>
+
+      <div class="footer-phrase">
+        Where Winds Meet mood • red lantern night • birthday quest mode
+      </div>
     </div>
   </section>
 
-  <!-- ===== READY SCREEN ===== -->
+  <!-- ================= READY ================= -->
   <section class="screen" id="readyScreen">
     <div class="topbar">
-      <span class="topbar-badge">DIANA HP ♥♥♥♥</span>
-      <span class="topbar-badge">JIANGHU BIRTHDAY MODE</span>
+      <span class="badge">DIANA HP ♥ ♥ ♥ ♥</span>
+      <span class="badge">JIANGHU BIRTHDAY MODE • 寿 喜 福</span>
     </div>
-    <div style="flex:1;display:flex;flex-direction:row;align-items:stretch">
-      <div class="ready-chibi-side" id="readyChibiSlot"></div>
-      <div class="ready-dialog-side">
-        <div class="paper-box">
-          <h2>Ready<br>to Play?</h2>
-          <p>Пройди 4 раунда крестиков-ноликов и открой поздравления для Дианы — воина Дзянху, именинника этого сервера.</p>
-          <div class="btn-row">
-            <button class="pixel-btn" id="yesBtn">YES ▶</button>
-            <button class="pixel-btn gold-btn" id="noBtn">NO</button>
+
+    <div class="ready-body">
+      <div class="ready-visual">
+        <div class="ready-frame">
+          <div class="token-wrap ready-cake" id="readyCakeSlot">
+            <img src="cake.png" alt="Birthday cake">
+            <div class="sparkles">
+              <span>✦</span><span>✦</span><span>✦</span>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="panel ready-dialog">
+        <h2>Ready<br>to Play?</h2>
+        <p>
+          Пройди 4 раунда крестиков-ноликов и открой поздравления
+          для Дианы — воина Дзянху, именинника этого сервера.
+          Сегодня весь этот маленький мир сияет красными фонарями в её честь.
+        </p>
+        <div class="btn-row">
+          <button class="pixel-btn" id="yesBtn">YES ▶</button>
+          <button class="pixel-btn gold" id="noBtn">NO</button>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ===== GAME SCREEN ===== -->
+  <!-- ================= GAME ================= -->
   <section class="screen" id="gameScreen">
     <div class="topbar">
-      <span class="topbar-badge">ROUND <span id="roundNum">1</span>/4 &nbsp; ♥ ♥ ♥ ♥</span>
-      <span class="topbar-badge">ТЫ ИГРАЕШЬ: ♥</span>
+      <span class="badge">ROUND <span id="roundNum">1</span>/4 • ♥ ♥ ♥ ♥</span>
+      <span class="badge">ТЫ ИГРАЕШЬ: ♥</span>
     </div>
-    <div class="game-area">
-      <div class="board-wrap"><div class="ttt-board" id="board"></div></div>
-      <div class="paper-box game-panel">
+
+    <div class="game-body">
+      <div class="ttt-board" id="board"></div>
+
+      <div class="panel game-panel">
         <h3>Крестики-нолики</h3>
         <p id="gameStatus">Твой ход. Собери три ♥ в ряд.</p>
-        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-          <button class="pixel-btn" id="retryBtn" style="display:none;font-size:clamp(7px,1vw,9px)">REPLAY</button>
-        </div>
+        <button class="pixel-btn" id="retryBtn" style="display:none;">Replay</button>
       </div>
     </div>
   </section>
 
-  <!-- ===== WIN SCREEN ===== -->
+  <!-- ================= WIN ================= -->
   <section class="screen" id="winScreen">
     <div class="topbar">
-      <span class="topbar-badge" id="winRoundBadge">ROUND 1 CLEAR!</span>
-      <span class="topbar-badge">♥ ♥ ♥ ♥</span>
+      <span class="badge" id="winRoundBadge">ROUND 1 CLEAR!</span>
+      <span class="badge">RED LANTERN CELEBRATION • 寿 寿 寿</span>
     </div>
-    <div style="flex:1;display:flex;flex-direction:row;align-items:stretch">
-      <div class="win-chibi-side" id="winChibiSlot"></div>
-      <div class="win-msg-side">
-        <div class="paper-box">
-          <h2 id="winTitle">Поздравление</h2>
-          <p id="winMsg" style="font-size:clamp(7px,1vw,10px);line-height:2;margin-bottom:16px"></p>
-          <button class="pixel-btn" id="nextBtn">NEXT ▶</button>
-        </div>
+
+    <div class="win-body">
+      <div class="win-cakes" id="winCakeSlot"></div>
+
+      <div class="panel msg-panel">
+        <h2 id="winTitle">Поздравление</h2>
+        <p id="winMsg"></p>
+        <button class="pixel-btn" id="nextBtn">NEXT ▶</button>
       </div>
     </div>
   </section>
 
-  <!-- ===== FINAL SCREEN ===== -->
+  <!-- ================= FINAL ================= -->
   <section class="screen" id="finalScreen">
     <div class="final-inner">
-      <div class="hearts-row">♥ ♥ ♥ ♥ ♥</div>
-      <div class="game-title" style="text-align:center;margin-bottom:8px">
-        <span class="line2" style="font-size:clamp(18px,4vw,42px)">HAPPY<br>BIRTHDAY!</span>
+      <div class="hearts">♥ ♥ ♥ ♥ ♥</div>
+
+      <div class="title-big">
+        <span class="small">Quest Completed</span>
+        <span class="main">Happy<br>Birthday!</span>
       </div>
-      <div style="display:flex;gap:-30px;margin-bottom:8px" id="finalChibis"></div>
-      <div class="final-msg">
-        <p>Диана, birthday quest завершён.<br><br>
-        Пусть в твоём Дзянху будет больше красивых побед, верных людей рядом, редкого лута и моментов, которые хочется сохранить как любимый скриншот. Сегодня весь наш сервер празднует тебя. ♥</p>
+
+      <div class="final-cakes" id="finalCakeSlot"></div>
+
+      <div class="panel final-card">
+        <p>
+          Диана, birthday quest завершён.<br><br>
+          Пусть в твоём Дзянху будет больше красивых побед,
+          верных людей рядом, редкого лута и моментов,
+          которые хочется сохранить как любимый скриншот.<br><br>
+          Сегодня весь наш маленький сервер празднует тебя. ♥
+        </p>
       </div>
-      <button class="pixel-btn gold-btn" id="restartBtn" style="margin-top:8px">PLAY AGAIN</button>
+
+      <button class="pixel-btn gold" id="restartBtn">Play Again</button>
     </div>
   </section>
 </div>
 
 <script>
-// ---- CHIBI SVG ----
-// Chibi based on the reference image: dark swept hair, fur-trim cloak, red robe, gold necklace, amber eyes
-function makeChibi(scale=1, flip=false){
-  const w=110,h=200;
-  const sc=`scale(${flip?-scale:scale},${scale})`;
-  const tx=flip?-w*scale:0;
-  return `<svg width="${w*scale}" height="${h*scale}" viewBox="0 0 ${w} ${h}" style="display:block;overflow:visible">
-  <g transform="translate(${tx},0) ${sc}">
-    <!-- legs -->
-    <rect x="30" y="148" width="20" height="40" rx="3" fill="#3a2030" stroke="#1a1020" stroke-width="3"/>
-    <rect x="58" y="148" width="20" height="40" rx="3" fill="#3a2030" stroke="#1a1020" stroke-width="3"/>
-    <!-- boots -->
-    <rect x="28" y="174" width="24" height="14" rx="4" fill="#2a1820" stroke="#1a1020" stroke-width="3"/>
-    <rect x="56" y="174" width="24" height="14" rx="4" fill="#2a1820" stroke="#1a1020" stroke-width="3"/>
-    <!-- body robe red -->
-    <rect x="22" y="90" width="66" height="70" rx="6" fill="#c43040" stroke="#1a1020" stroke-width="4"/>
-    <!-- robe dark pattern -->
-    <rect x="30" y="110" width="8" height="50" fill="#a02030" rx="2"/>
-    <rect x="72" y="110" width="8" height="50" fill="#a02030" rx="2"/>
-    <!-- fur cloak white/cream -->
-    <path d="M8,75 Q4,120 12,165 L28,155 L28,90 Z" fill="#ddd8cc" stroke="#1a1020" stroke-width="3"/>
-    <path d="M102,75 Q106,120 98,165 L82,155 L82,90 Z" fill="#c8c0a8" stroke="#1a1020" stroke-width="3"/>
-    <!-- fur texture left -->
-    <line x1="14" y1="90" x2="10" y2="100" stroke="#b8b090" stroke-width="2"/>
-    <line x1="16" y1="105" x2="11" y2="115" stroke="#b8b090" stroke-width="2"/>
-    <line x1="15" y1="120" x2="10" y2="130" stroke="#b8b090" stroke-width="2"/>
-    <!-- fur texture right -->
-    <line x1="96" y1="90" x2="100" y2="100" stroke="#a8a080" stroke-width="2"/>
-    <line x1="94" y1="105" x2="99" y2="115" stroke="#a8a080" stroke-width="2"/>
-    <line x1="95" y1="120" x2="100" y2="130" stroke="#a8a080" stroke-width="2"/>
-    <!-- belt wolf buckle -->
-    <rect x="22" y="140" width="66" height="14" rx="2" fill="#2a1820" stroke="#1a1020" stroke-width="3"/>
-    <rect x="44" y="138" width="22" height="18" rx="3" fill="#c8c0a8" stroke="#1a1020" stroke-width="3"/>
-    <ellipse cx="55" cy="147" rx="7" ry="6" fill="#8a8070" stroke="#1a1020" stroke-width="2"/>
-    <!-- gold necklace -->
-    <path d="M30,96 Q55,112 80,96" fill="none" stroke="#f5c842" stroke-width="4"/>
-    <circle cx="45" cy="103" r="4" fill="#f5c842" stroke="#1a1020" stroke-width="2"/>
-    <circle cx="55" cy="106" r="5" fill="#c43040" stroke="#1a1020" stroke-width="2"/>
-    <circle cx="65" cy="103" r="4" fill="#f5c842" stroke="#1a1020" stroke-width="2"/>
-    <!-- arms -->
-    <rect x="5" y="88" width="20" height="50" rx="8" fill="#c43040" stroke="#1a1020" stroke-width="3"/>
-    <rect x="85" y="88" width="20" height="50" rx="8" fill="#c43040" stroke="#1a1020" stroke-width="3"/>
-    <!-- hands -->
-    <ellipse cx="15" cy="142" rx="10" ry="8" fill="#f0c890" stroke="#1a1020" stroke-width="3"/>
-    <ellipse cx="95" cy="142" rx="10" ry="8" fill="#f0c890" stroke="#1a1020" stroke-width="3"/>
-    <!-- head -->
-    <ellipse cx="55" cy="52" rx="38" ry="36" fill="#f0c890" stroke="#1a1020" stroke-width="4"/>
-    <!-- ear -->
-    <ellipse cx="18" cy="54" rx="8" ry="10" fill="#f0c890" stroke="#1a1020" stroke-width="3"/>
-    <ellipse cx="92" cy="54" rx="8" ry="10" fill="#f0c890" stroke="#1a1020" stroke-width="3"/>
-    <!-- earrings gold -->
-    <rect x="12" y="56" width="6" height="16" rx="3" fill="#f5c842" stroke="#1a1020" stroke-width="2"/>
-    <rect x="88" y="56" width="6" height="16" rx="3" fill="#f5c842" stroke="#1a1020" stroke-width="2"/>
-    <!-- hair base dark -->
-    <ellipse cx="55" cy="32" rx="40" ry="28" fill="#1a1020" stroke="#1a1020" stroke-width="3"/>
-    <!-- hair swept messy top -->
-    <path d="M30,20 Q40,4 55,14 Q62,4 72,10 Q82,2 88,16" fill="none" stroke="#1a1020" stroke-width="6" stroke-linecap="round"/>
-    <path d="M20,28 Q15,14 28,10 Q24,6 35,12" fill="#1a1020" stroke="#1a1020" stroke-width="3"/>
-    <path d="M90,28 Q95,14 82,10 Q86,6 75,12" fill="#1a1020" stroke="#1a1020" stroke-width="3"/>
-    <!-- hair bun top -->
-    <ellipse cx="58" cy="10" rx="12" ry="9" fill="#1a1020" stroke="#1a1020" stroke-width="3"/>
-    <!-- hair pin gold -->
-    <rect x="54" y="4" width="3" height="12" fill="#f5c842" rx="1"/>
-    <circle cx="55.5" cy="4" r="3" fill="#f5c842" stroke="#1a1020" stroke-width="1"/>
-    <!-- hair flowing side left -->
-    <path d="M18,36 Q10,60 14,90 Q20,80 22,60 Q20,45 18,36Z" fill="#1a1020" stroke="#1a1020" stroke-width="2"/>
-    <!-- hair flowing side right -->
-    <path d="M92,36 Q100,60 96,90 Q90,80 88,60 Q90,45 92,36Z" fill="#1a1020" stroke="#1a1020" stroke-width="2"/>
-    <!-- face features -->
-    <!-- mole under right eye (character detail) -->
-    <circle cx="72" cy="60" r="2.5" fill="#3a1820"/>
-    <!-- eyebrows -->
-    <path d="M36,38 Q44,34 50,36" fill="none" stroke="#1a1020" stroke-width="3" stroke-linecap="round"/>
-    <path d="M60,36 Q66,34 74,38" fill="none" stroke="#1a1020" stroke-width="3" stroke-linecap="round"/>
-    <!-- eyes amber -->
-    <ellipse cx="43" cy="48" rx="9" ry="8" fill="#f0a830" stroke="#1a1020" stroke-width="3"/>
-    <ellipse cx="67" cy="48" rx="9" ry="8" fill="#f0a830" stroke="#1a1020" stroke-width="3"/>
-    <!-- pupils -->
-    <ellipse cx="44" cy="49" rx="5" ry="6" fill="#3a1820"/>
-    <ellipse cx="68" cy="49" rx="5" ry="6" fill="#3a1820"/>
-    <!-- eye shine -->
-    <circle cx="46" cy="46" r="2.5" fill="white"/>
-    <circle cx="70" cy="46" r="2.5" fill="white"/>
-    <!-- nose -->
-    <path d="M52,58 Q55,62 58,58" fill="none" stroke="#c8905a" stroke-width="2" stroke-linecap="round"/>
-    <!-- mouth small -->
-    <path d="M46,66 Q55,72 64,66" fill="none" stroke="#1a1020" stroke-width="2.5" stroke-linecap="round"/>
-    <!-- heart deco -->
-    <text x="6" y="84" font-size="12" fill="#e84060">♥</text>
-  </g>
-</svg>`;
-}
+const P='♥';
+const B='✦';
+const CAKE_SRC='cake.png';
 
-function makeChibiNode(scale=1,flip=false){
-  const d=document.createElement('div');
-  d.className='chibi-container';
-  d.innerHTML=makeChibi(scale,flip)+
-    '<span class="sparkle s1">✦</span><span class="sparkle s2">✦</span><span class="sparkle s3">✦</span>';
-  return d;
-}
+let board = [];
+let round = 1;
+let locked = false;
 
-// ---- GAME STATE ----
-const P='♥', B='✦';
-let board,round,locked;
-
-const screens={
-  start:document.getElementById('startScreen'),
-  ready:document.getElementById('readyScreen'),
-  game:document.getElementById('gameScreen'),
-  win:document.getElementById('winScreen'),
-  final:document.getElementById('finalScreen')
+const screens = {
+  start: document.getElementById('startScreen'),
+  ready: document.getElementById('readyScreen'),
+  game: document.getElementById('gameScreen'),
+  win: document.getElementById('winScreen'),
+  final: document.getElementById('finalScreen')
 };
 
-const messages=[
-  {title:'Первое поздравление',msg:'Диана, с днём рождения! Пусть Kornubula всегда входит в кадр как главный герой Дзянху — и рядом будут люди, с которыми спокойно идти хоть на босса, хоть в новый квест. ♥'},
-  {title:'Второе поздравление',msg:'Желаем тебе редкого лута, красивых побед, стабильного урона по грусти — и настроения, которое не ломают ни рандомы, ни сложные механики. ♥'},
-  {title:'Третье поздравление',msg:'Пусть новый год жизни будет как лучший ивент: тёплый, яркий, смешной, с красивыми моментами и наградами, которые правда хочется оставить в сундуке навсегда. ♥'},
-  {title:'Финальное поздравление',msg:'Сегодня весь наш маленький сервер празднует тебя. Будь счастлива, сияй и собирай вокруг себя только тех, кто обнимает после каждого раунда. С днём рождения, Диана! ♥'}
+const messages = [
+  {
+    title:'Первое поздравление',
+    msg:'Диана, с днём рождения! Пусть Kornubula всегда входит в кадр как главный герой Дзянху — и рядом будут люди, с которыми спокойно идти хоть на босса, хоть в новый квест. ♥'
+  },
+  {
+    title:'Второе поздравление',
+    msg:'Желаем тебе редкого лута, красивых побед, стабильного урона по грусти — и настроения, которое не ломают ни рандомы, ни сложные механики. ♥'
+  },
+  {
+    title:'Третье поздравление',
+    msg:'Пусть новый год жизни будет как лучший ивент: тёплый, яркий, смешной, с красивыми моментами и наградами, которые правда хочется забрать. ♥'
+  },
+  {
+    title:'Финальное поздравление',
+    msg:'Сегодня весь наш маленький сервер празднует тебя. Будь счастлива, сияй и собирай вокруг себя только тех, кто обнимает после каждого раунда. С днём рождения, Диана! ♥'
+  }
 ];
 
 function show(name){
-  Object.values(screens).forEach(s=>s.classList.remove('active'));
+  Object.values(screens).forEach(s => s.classList.remove('active'));
   screens[name].classList.add('active');
 }
 
-function initReady(){
-  const slot=document.getElementById('readyChibiSlot');
-  slot.innerHTML='';
-  slot.appendChild(makeChibiNode(1.1));
-  show('ready');
+function makeCakeNode(scale=1, mirrored=false){
+  const wrap = document.createElement('div');
+  wrap.className = 'token-wrap cake-card';
+  wrap.style.width = `${180 * scale}px`;
+  wrap.style.height = `${260 * scale}px`;
+
+  const img = document.createElement('img');
+  img.src = CAKE_SRC;
+  img.alt = 'Birthday cake';
+  img.style.transform = mirrored ? 'scaleX(-1)' : 'none';
+
+  const sparkles = document.createElement('div');
+  sparkles.className = 'sparkles';
+  sparkles.innerHTML = '<span>✦</span><span>✦</span><span>✦</span>';
+
+  wrap.appendChild(img);
+  wrap.appendChild(sparkles);
+
+  return wrap;
+}
+
+function fillReadyCake(){
+  const slot = document.getElementById('readyCakeSlot');
+  slot.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = CAKE_SRC;
+  img.alt = 'Birthday cake';
+  const sparkles = document.createElement('div');
+  sparkles.className = 'sparkles';
+  sparkles.innerHTML = '<span>✦</span><span>✦</span><span>✦</span>';
+  slot.appendChild(img);
+  slot.appendChild(sparkles);
+}
+
+function winCheck(b,s){
+  const lines = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+  return lines.some(line => line.every(i => b[i] === s));
+}
+
+function drawCheck(){
+  return board.every(Boolean);
+}
+
+function renderBoard(){
+  const boardEl = document.getElementById('board');
+  boardEl.innerHTML = '';
+
+  board.forEach((v,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'cell' + (v===P ? ' x-cell' : v===B ? ' o-cell' : '');
+    btn.textContent = v;
+    btn.disabled = locked || Boolean(v);
+    btn.onclick = () => playerMove(i);
+    boardEl.appendChild(btn);
+  });
 }
 
 function startRound(){
-  board=Array(9).fill('');
-  locked=false;
-  document.getElementById('roundNum').textContent=round;
-  document.getElementById('gameStatus').textContent='Твой ход. Собери три ♥ в ряд.';
-  document.getElementById('retryBtn').style.display='none';
+  board = Array(9).fill('');
+  locked = false;
+  document.getElementById('roundNum').textContent = round;
+  document.getElementById('gameStatus').textContent = 'Твой ход. Собери три ♥ в ряд.';
+  document.getElementById('retryBtn').style.display = 'none';
   renderBoard();
   show('game');
 }
 
-function renderBoard(){
-  const el=document.getElementById('board');
-  el.innerHTML='';
-  board.forEach((v,i)=>{
-    const btn=document.createElement('button');
-    btn.className='cell'+(v===P?' x-cell':v===B?' o-cell':'');
-    btn.textContent=v;
-    btn.disabled=locked||Boolean(v);
-    btn.onclick=()=>playerMove(i);
-    el.appendChild(btn);
-  });
-}
-
-function win(b,s){
-  const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  return lines.some(l=>l.every(i=>b[i]===s));
-}
-function draw(){return board.every(Boolean)}
-
 function playerMove(i){
-  if(locked||board[i])return;
-  board[i]=P;
+  if(locked || board[i]) return;
+
+  board[i] = P;
   renderBoard();
-  if(win(board,P)){setTimeout(openWin,250);return}
-  if(draw()){setTimeout(openWin,250);return}
-  locked=true;
-  document.getElementById('gameStatus').textContent='Ход соперника...';
-  setTimeout(botMove,380);
+
+  if(winCheck(board,P)){
+    setTimeout(openWin, 240);
+    return;
+  }
+
+  if(drawCheck()){
+    setTimeout(openWin, 240);
+    return;
+  }
+
+  locked = true;
+  document.getElementById('gameStatus').textContent = 'Ход соперника...';
+  setTimeout(botMove, 340);
 }
 
 function botMove(){
-  const empty=board.map((v,i)=>v?null:i).filter(v=>v!==null);
-  if(!empty.length){openWin();return}
-  // bot plays weak: prefer edges/random, avoid winning moves
-  const center=[4].filter(i=>empty.includes(i));
-  const edges=[1,3,5,7].filter(i=>empty.includes(i));
-  const corners=[0,2,6,8].filter(i=>empty.includes(i));
-  let pool=edges.length?edges:(corners.length?corners:empty);
-  // 80% chance to avoid winning to keep it easy
-  const winning=empty.filter(i=>{const t=[...board];t[i]=B;return win(t,B)});
-  if(winning.length&&Math.random()<0.85)pool=empty.filter(i=>!winning.includes(i));
-  if(!pool.length)pool=empty;
-  const move=pool[Math.floor(Math.random()*pool.length)];
-  board[move]=B;
-  locked=false;
-  renderBoard();
-  if(win(board,B)){
-    document.getElementById('gameStatus').textContent='Бот случайно победил. Нажми REPLAY — это праздничная игра!';
-    document.getElementById('retryBtn').style.display='inline-block';
-    locked=true;renderBoard();return;
+  const empty = board.map((v,i)=>v ? null : i).filter(v=>v!==null);
+
+  if(!empty.length){
+    openWin();
+    return;
   }
-  if(draw()){openWin();return}
-  document.getElementById('gameStatus').textContent='Твой ход. Собери три ♥ в ряд.';
+
+  // лёгкий бот: почти не мешает выиграть
+  const edges = [1,3,5,7].filter(i=>empty.includes(i));
+  const corners = [0,2,6,8].filter(i=>empty.includes(i));
+  let pool = edges.length ? edges : (corners.length ? corners : empty);
+
+  const winning = empty.filter(i=>{
+    const t=[...board];
+    t[i]=B;
+    return winCheck(t,B);
+  });
+
+  if(winning.length && Math.random() < 0.9){
+    pool = empty.filter(i=>!winning.includes(i));
+  }
+
+  if(!pool.length) pool = empty;
+
+  const move = pool[Math.floor(Math.random() * pool.length)];
+  board[move] = B;
+  locked = false;
+  renderBoard();
+
+  if(winCheck(board,B)){
+    document.getElementById('gameStatus').textContent =
+      'Бот случайно победил. Нажми Replay — это праздничная игра.';
+    document.getElementById('retryBtn').style.display = 'inline-block';
+    locked = true;
+    renderBoard();
+    return;
+  }
+
+  if(drawCheck()){
+    openWin();
+    return;
+  }
+
+  document.getElementById('gameStatus').textContent = 'Твой ход. Собери три ♥ в ряд.';
 }
 
 function openWin(){
-  const m=messages[round-1];
-  document.getElementById('winRoundBadge').textContent=`ROUND ${round} CLEAR! ★`;
-  document.getElementById('winTitle').textContent=m.title;
-  document.getElementById('winMsg').textContent=m.msg;
-  document.getElementById('nextBtn').textContent=round>=4?'FINAL ★':'NEXT ▶';
-  const slot=document.getElementById('winChibiSlot');
-  slot.innerHTML='';
-  // 3 chibis hugging
-  const c1=makeChibiNode(0.65,false);c1.style.transform='translateX(20px)';c1.style.zIndex='3';
-  const c2=makeChibiNode(0.85,false);c2.style.zIndex='5';
-  const c3=makeChibiNode(0.65,true);c3.style.transform='translateX(-20px)';c3.style.zIndex='3';
-  slot.appendChild(c1);slot.appendChild(c2);slot.appendChild(c3);
+  const m = messages[round - 1];
+  document.getElementById('winRoundBadge').textContent = `ROUND ${round} CLEAR! ★`;
+  document.getElementById('winTitle').textContent = m.title;
+  document.getElementById('winMsg').textContent = m.msg;
+  document.getElementById('nextBtn').textContent = round >= 4 ? 'FINAL ★' : 'NEXT ▶';
+
+  const slot = document.getElementById('winCakeSlot');
+  slot.innerHTML = '';
+  slot.appendChild(makeCakeNode(0.78, false));
+  slot.appendChild(makeCakeNode(1, false));
+  slot.appendChild(makeCakeNode(0.78, true));
+
   show('win');
 }
 
 function showFinal(){
-  const slot=document.getElementById('finalChibis');
-  slot.innerHTML='';
-  const c1=makeChibiNode(0.7,false);
-  const c2=makeChibiNode(0.9,false);
-  const c3=makeChibiNode(0.7,true);
-  [c1,c2,c3].forEach(c=>{c.style.display='inline-block';slot.appendChild(c)});
+  const slot = document.getElementById('finalCakeSlot');
+  slot.innerHTML = '';
+  slot.appendChild(makeCakeNode(0.82, false));
+  slot.appendChild(makeCakeNode(1.02, false));
+  slot.appendChild(makeCakeNode(0.82, true));
   show('final');
 }
 
-// ---- BUTTONS ----
-document.getElementById('startBtn').onclick=()=>initReady();
-document.getElementById('yesBtn').onclick=()=>{round=1;startRound()};
-document.getElementById('noBtn').onclick=()=>{
-  document.querySelector('#readyScreen .paper-box p').textContent='Отступление невозможно. Birthday Quest уже активирован системой Дзянху. ♥';
+/* buttons */
+document.getElementById('startBtn').onclick = ()=>{
+  fillReadyCake();
+  show('ready');
 };
-document.getElementById('retryBtn').onclick=()=>startRound();
-document.getElementById('nextBtn').onclick=()=>{
-  if(round>=4)showFinal();
-  else{round++;startRound()}
+
+document.getElementById('yesBtn').onclick = ()=>{
+  round = 1;
+  startRound();
 };
-document.getElementById('restartBtn').onclick=()=>{round=1;show('start')};
+
+document.getElementById('noBtn').onclick = ()=>{
+  document.querySelector('#readyScreen .ready-dialog p').textContent =
+    'Отступление невозможно. Birthday Quest уже активирован системой Дзянху. ♥';
+};
+
+document.getElementById('retryBtn').onclick = ()=>startRound();
+
+document.getElementById('nextBtn').onclick = ()=>{
+  if(round >= 4) showFinal();
+  else{
+    round++;
+    startRound();
+  }
+};
+
+document.getElementById('restartBtn').onclick = ()=>{
+  round = 1;
+  fillReadyCake();
+  show('start');
+};
+
+fillReadyCake();
 </script>
 </body>
 </html>
