@@ -1,848 +1,483 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kornubula Birthday Quest</title>
-  <style>
-    :root {
-      --sky-1: #78c8ff;
-      --sky-2: #2e8bd7;
-      --mist: #dff6ff;
-      --jade: #2f8f75;
-      --jade-dark: #15594d;
-      --grass: #4fb96a;
-      --hill: #2f8a58;
-      --ink: #151622;
-      --ink-2: #2b2036;
-      --paper: #fff0cf;
-      --paper-2: #ffdca8;
-      --red: #b9323e;
-      --red-dark: #641b27;
-      --gold: #ffd66b;
-      --pink: #f59bbb;
-      --white: #fffaf0;
-      --shadow: rgba(21, 22, 34, .45);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kornubula Birthday Quest</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;image-rendering:pixelated}
+:root{
+  --ink:#1a1020;--gold:#f5c842;--red:#c43040;--red2:#8a1a28;
+  --paper:#fdf0d0;--paper2:#f5d89a;--jade:#2a7a5a;--jade2:#1a5a3a;
+  --sky:#5ba8d8;--sky2:#3a7aaa;--mist:#d8eef8;
+  --cream:#fff8e8;--brown:#6a3a1a;--fur:#e8e0d0;
+}
+html,body{width:100%;height:100%;background:#0d0a14;font-family:'Press Start 2P',monospace;overflow:hidden;color:var(--cream)}
+body{display:flex;align-items:center;justify-content:center}
+.game{
+  position:relative;width:min(100vw,1100px);aspect-ratio:16/9;
+  overflow:hidden;background:#5ba8d8;
+  border:8px solid var(--ink);box-shadow:0 0 0 4px #3a2050,0 24px 80px rgba(0,0,0,.7);
+}
+@media(max-width:700px){.game{width:100vw;height:100vh;aspect-ratio:auto;border:0}}
 
-    * { box-sizing: border-box; }
+/* BG layers */
+.bg-sky{position:absolute;inset:0;background:linear-gradient(180deg,#2a4070 0%,#3a6098 30%,#5ba8d8 55%,#5ba8d8 55%,#3a7848 55%,#2a5835 100%);z-index:0}
+.bg-mountain{position:absolute;bottom:42%;z-index:1}
+.bg-mountain svg{display:block}
+.bg-ground{position:absolute;bottom:0;left:0;right:0;height:42%;background:linear-gradient(180deg,#3a7848 0%,#2a5835 100%);z-index:1}
+.bg-ground::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,#4a9858 0 8px,#3a7848 8px 16px)}
+.cloud{position:absolute;z-index:2}
+.lantern-deco{position:absolute;z-index:3}
 
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      background: #0d0e18;
-      overflow: hidden;
-      font-family: "Courier New", monospace;
-      color: var(--white);
-    }
+/* Screens */
+.screen{position:absolute;inset:0;display:none;z-index:10}
+.screen.active{display:flex;flex-direction:column}
 
-    body {
-      display: grid;
-      place-items: center;
-    }
+/* ===== START SCREEN ===== */
+#startScreen{align-items:center;justify-content:center}
+.start-inner{display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;z-index:4}
+.game-title{text-align:center;line-height:1.4}
+.game-title .line1{font-size:clamp(10px,2vw,18px);color:var(--gold);text-shadow:3px 3px 0 #7a4a00;letter-spacing:3px;display:block;margin-bottom:8px}
+.game-title .line2{font-size:clamp(22px,5vw,52px);color:var(--cream);text-shadow:4px 4px 0 var(--ink),8px 8px 0 rgba(0,0,0,.3);display:block;line-height:1.2}
+.hearts-row{font-size:22px;color:#e84060;text-shadow:2px 2px 0 #6a0020;letter-spacing:10px}
+.pixel-btn{
+  font-family:'Press Start 2P',monospace;cursor:pointer;
+  background:linear-gradient(180deg,#e84060,#a82040);
+  color:#fff;font-size:clamp(10px,1.8vw,16px);
+  border:0;outline:4px solid var(--ink);outline-offset:-4px;
+  box-shadow:4px 4px 0 var(--red2);
+  padding:12px 28px;text-shadow:2px 2px 0 var(--red2);
+  text-transform:uppercase;transition:transform .1s;
+}
+.pixel-btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--red2)}
+.pixel-btn.gold-btn{background:linear-gradient(180deg,var(--gold),#c89a20);color:var(--ink);text-shadow:none;box-shadow:4px 4px 0 #8a5a00}
+.pixel-btn.gold-btn:hover{box-shadow:2px 2px 0 #8a5a00}
 
-    button {
-      font-family: inherit;
-    }
+/* ===== READY SCREEN ===== */
+#readyScreen{flex-direction:row;align-items:stretch}
+.ready-chibi-side{flex:0 0 38%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;position:relative;z-index:4}
+.ready-dialog-side{flex:1;display:flex;align-items:center;justify-content:flex-start;padding:28px 28px 28px 0;z-index:4}
+.paper-box{
+  background:linear-gradient(180deg,rgba(253,240,208,.97),rgba(245,216,154,.97));
+  border:5px solid var(--ink);box-shadow:8px 8px 0 rgba(0,0,0,.4);
+  padding:22px 24px;color:var(--ink);max-width:420px;
+  position:relative;
+}
+.paper-box::before,.paper-box::after{
+  content:'';position:absolute;width:36px;height:36px;
+  background:var(--red);border:4px solid var(--ink);top:-14px;
+}
+.paper-box::before{left:-14px}.paper-box::after{right:-14px}
+.paper-box h2{font-size:clamp(14px,2.8vw,26px);color:var(--red2);margin-bottom:14px;line-height:1.4}
+.paper-box p{font-size:clamp(7px,1.1vw,11px);line-height:1.9;margin-bottom:18px}
+.btn-row{display:flex;gap:14px;flex-wrap:wrap}
 
-    .game {
-      position: relative;
-      width: min(100vw, 1180px);
-      aspect-ratio: 16 / 9;
-      overflow: hidden;
-      background: linear-gradient(#71c9ff 0%, #4fb1ef 54%, #50b96b 54%, #2f8a58 100%);
-      border: 10px solid #11131f;
-      box-shadow: 0 28px 90px rgba(0,0,0,.55);
-      image-rendering: pixelated;
-    }
+/* ===== GAME SCREEN ===== */
+#gameScreen{flex-direction:column}
+.topbar{
+  position:relative;z-index:4;display:flex;justify-content:space-between;align-items:center;
+  padding:10px 18px;background:rgba(10,8,20,.75);border-bottom:4px solid var(--ink);
+  flex-shrink:0;
+}
+.topbar-badge{font-size:clamp(7px,1.1vw,11px);color:var(--gold);text-shadow:2px 2px 0 #5a3a00}
+.game-area{flex:1;display:flex;align-items:center;justify-content:center;gap:28px;padding:14px 24px;position:relative;z-index:4}
+.board-wrap{}
+.ttt-board{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:8px;padding:12px;
+  background:rgba(253,240,208,.95);border:6px solid var(--ink);
+  box-shadow:8px 8px 0 rgba(0,0,0,.4);
+  width:min(44vw,320px);aspect-ratio:1;
+}
+.cell{
+  cursor:pointer;background:linear-gradient(180deg,#c43040,#8a1a28);
+  border:4px solid var(--ink);font-size:clamp(26px,4.5vw,52px);
+  color:var(--cream);text-shadow:2px 2px 0 var(--ink);
+  box-shadow:inset -4px -4px 0 rgba(0,0,0,.3);
+  transition:background .1s;
+}
+.cell:hover:not(:disabled){background:linear-gradient(180deg,#e86070,#c43040)}
+.cell:disabled{cursor:default}
+.cell.x-cell{background:linear-gradient(180deg,#2a7a5a,#1a5a3a)}
+.cell.o-cell{background:linear-gradient(180deg,#5a3a7a,#3a1a5a)}
+.game-panel{flex:0 0 auto;max-width:280px}
+.game-panel h3{font-size:clamp(8px,1.3vw,12px);color:var(--gold);margin-bottom:10px;text-transform:uppercase}
+.game-panel p{font-size:clamp(7px,1vw,10px);line-height:2;color:var(--paper);min-height:60px}
 
-    .screen {
-      position: absolute;
-      inset: 0;
-      display: none;
-      padding: 34px;
-    }
+/* ===== WIN SCREEN ===== */
+#winScreen{flex-direction:row;align-items:stretch}
+.win-chibi-side{flex:0 0 44%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;gap:-20px;position:relative;z-index:4}
+.win-msg-side{flex:1;display:flex;align-items:center;padding:28px 28px 28px 8px;z-index:4}
 
-    .screen.active {
-      display: block;
-    }
+/* ===== FINAL SCREEN ===== */
+#finalScreen{align-items:center;justify-content:center}
+.final-inner{display:flex;flex-direction:column;align-items:center;gap:14px;z-index:4;position:relative;padding:20px}
+.final-msg{
+  background:rgba(253,240,208,.97);border:5px solid var(--ink);
+  box-shadow:8px 8px 0 rgba(0,0,0,.4);
+  color:var(--ink);padding:20px 24px;max-width:540px;text-align:center;
+}
+.final-msg p{font-size:clamp(7px,1.1vw,10px);line-height:2.2}
 
-    .mountain {
-      position: absolute;
-      bottom: 220px;
-      width: 360px;
-      height: 170px;
-      background: rgba(224,246,255,.48);
-      clip-path: polygon(0 100%, 30% 35%, 44% 58%, 62% 18%, 100% 100%);
-      z-index: 0;
-    }
-
-    .mountain.left { left: -30px; }
-    .mountain.right { right: -80px; transform: scaleX(-1); }
-
-    .cloud {
-      position: absolute;
-      width: 130px;
-      height: 30px;
-      background: var(--mist);
-      opacity: .85;
-      box-shadow: 28px -12px 0 var(--mist), 62px -20px 0 var(--mist), 95px -5px 0 var(--mist), 45px 10px 0 rgba(185,225,242,.9);
-      z-index: 0;
-    }
-
-    .cloud.a { top: 82px; left: 90px; }
-    .cloud.b { top: 118px; right: 165px; transform: scale(.8); }
-    .cloud.c { top: 265px; left: 320px; transform: scale(.7); }
-
-    .hill {
-      position: absolute;
-      bottom: -70px;
-      width: 520px;
-      height: 205px;
-      border-radius: 50% 50% 0 0;
-      background: var(--grass);
-      z-index: 0;
-      box-shadow: inset 0 22px 0 rgba(255,255,255,.13);
-    }
-
-    .hill.one { left: -130px; }
-    .hill.two { right: -150px; background: var(--hill); bottom: -45px; }
-    .hill.three { left: 360px; width: 620px; bottom: -110px; background: #72cd60; }
-
-    .pixel-border {
-      border: 5px solid var(--ink);
-      box-shadow: 8px 8px 0 var(--shadow);
-    }
-
-    .paper-card {
-      position: relative;
-      background: linear-gradient(180deg, rgba(255,240,207,.96), rgba(255,220,168,.96));
-      color: #342132;
-      border: 5px solid var(--ink);
-      box-shadow: 10px 10px 0 var(--shadow);
-      padding: 24px;
-      z-index: 3;
-    }
-
-    .paper-card::before,
-    .paper-card::after {
-      content: "";
-      position: absolute;
-      width: 52px;
-      height: 52px;
-      border: 5px solid var(--ink);
-      background: var(--red);
-      top: -18px;
-    }
-
-    .paper-card::before { left: -18px; }
-    .paper-card::after { right: -18px; }
-
-    .title {
-      margin: 0;
-      text-transform: uppercase;
-      text-align: center;
-      line-height: .92;
-      letter-spacing: 4px;
-      color: #eaf8ff;
-      text-shadow: 4px 4px 0 #1c6ea9, 8px 8px 0 rgba(0,0,0,.2);
-      font-weight: 900;
-    }
-
-    .title.big { font-size: clamp(42px, 7.3vw, 86px); }
-    .title.mid { font-size: clamp(34px, 5.8vw, 68px); }
-
-    .subtitle {
-      margin: 0 0 12px;
-      text-align: center;
-      color: #fff7d7;
-      font-weight: 900;
-      text-shadow: 3px 3px 0 #1c6ea9;
-      letter-spacing: 2px;
-      font-size: clamp(17px, 2.2vw, 25px);
-    }
-
-    .btn {
-      border: 0;
-      cursor: pointer;
-      background: linear-gradient(#ffb8cd, #ee6f9e);
-      color: #fff;
-      padding: 13px 26px;
-      font-size: 22px;
-      font-weight: 900;
-      text-transform: uppercase;
-      border: 4px solid var(--ink);
-      box-shadow: 5px 5px 0 var(--red-dark);
-      text-shadow: 2px 2px 0 var(--red-dark);
-      min-width: 140px;
-    }
-
-    .btn:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--red-dark); }
-    .btn.alt { background: linear-gradient(#fff9df, #ffd37f); color: #4b2534; text-shadow: none; }
-    .btn:disabled { opacity: .6; cursor: default; }
-
-    .center {
-      position: relative;
-      z-index: 2;
-      height: 100%;
-      display: grid;
-      place-items: center;
-      text-align: center;
-    }
-
-    .start-stack {
-      display: grid;
-      gap: 18px;
-      justify-items: center;
-    }
-
-    .hearts {
-      color: #ff3e67;
-      font-size: 30px;
-      text-shadow: 3px 3px 0 #6d1d2b;
-      letter-spacing: 8px;
-    }
-
-    .floating-item {
-      position: absolute;
-      z-index: 1;
-      filter: drop-shadow(4px 4px 0 rgba(0,0,0,.2));
-    }
-
-    .cake {
-      width: 82px;
-      height: 54px;
-      background: var(--pink);
-      border: 5px solid var(--ink);
-      box-shadow: inset 0 -12px 0 #d96a9a;
-    }
-    .cake::before { content:""; position:absolute; width:12px; height:36px; left:34px; top:-42px; background: var(--gold); border:4px solid var(--ink); }
-    .cake::after { content:""; position:absolute; width:14px; height:14px; left:33px; top:-58px; background:#ff6a37; border:3px solid var(--ink); transform:rotate(45deg); }
-
-    .envelope {
-      width: 76px;
-      height: 50px;
-      background: #ffeaf1;
-      border: 5px solid var(--ink);
-    }
-    .envelope::before { content:"❤"; position:absolute; left:26px; top:8px; color:#de3355; font-size:20px; }
-
-    .lantern {
-      width: 52px;
-      height: 68px;
-      border: 5px solid var(--ink);
-      border-radius: 16px;
-      background: linear-gradient(#d64249, #8e1e2c);
-    }
-    .lantern::before { content:""; position:absolute; left:8px; top:-15px; width:28px; height:8px; background:var(--gold); border:4px solid var(--ink); }
-    .lantern::after { content:""; position:absolute; left:19px; bottom:-20px; width:8px; height:18px; background:var(--gold); border:3px solid var(--ink); }
-
-    .item-1 { left: 95px; bottom: 115px; }
-    .item-2 { right: 160px; top: 95px; transform: rotate(8deg); }
-    .item-3 { right: 80px; bottom: 128px; }
-    .item-4 { left: 58px; top: 68px; }
-    .item-5 { right: 70px; top: 70px; }
-
-    .topbar {
-      position: relative;
-      z-index: 4;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-    }
-
-    .badge {
-      background: rgba(21,22,34,.72);
-      color: var(--paper);
-      border: 4px solid var(--paper);
-      box-shadow: 5px 5px 0 rgba(0,0,0,.22);
-      padding: 10px 14px;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .hp {
-      margin-top: 7px;
-      height: 14px;
-      width: 170px;
-      background: linear-gradient(90deg, #e33355 0 18%, #77d465 18% 100%);
-      border: 3px solid var(--ink);
-    }
-
-    .ready-grid {
-      position: relative;
-      z-index: 3;
-      height: calc(100% - 62px);
-      display: grid;
-      grid-template-columns: 340px minmax(0, 1fr);
-      align-items: center;
-      gap: 32px;
-    }
-
-    .dialog h2 {
-      margin: 0 0 16px;
-      font-size: clamp(40px, 6vw, 78px);
-      line-height: .9;
-      text-transform: uppercase;
-      color: #f5fff8;
-      text-shadow: 4px 4px 0 #1b6a94;
-    }
-
-    .dialog p {
-      margin: 0;
-      font-size: 20px;
-      line-height: 1.45;
-      color: #372336;
-      font-weight: 700;
-    }
-
-    .choice { display: flex; gap: 18px; margin-top: 24px; flex-wrap: wrap; }
-
-    .chibi-wrap {
-      display: grid;
-      place-items: end center;
-      min-height: 360px;
-    }
-
-    .chibi {
-      position: relative;
-      width: 154px;
-      height: 260px;
-      filter: drop-shadow(8px 8px 0 rgba(0,0,0,.25));
-    }
-
-    .chibi .hair-back {
-      position: absolute;
-      width: 55px;
-      height: 154px;
-      right: 8px;
-      top: 42px;
-      background: #211820;
-      border: 5px solid var(--ink);
-      border-radius: 14px 14px 34px 34px;
-      z-index: 1;
-    }
-
-    .chibi .fur {
-      position: absolute;
-      left: 8px;
-      top: 104px;
-      width: 138px;
-      height: 122px;
-      background: linear-gradient(90deg, #eef1e9 0 55%, #8d7364 55% 100%);
-      border: 5px solid var(--ink);
-      clip-path: polygon(10% 0, 90% 0, 100% 95%, 70% 83%, 52% 100%, 30% 83%, 0 95%);
-      z-index: 2;
-    }
-
-    .chibi .body {
-      position: absolute;
-      left: 33px;
-      top: 118px;
-      width: 88px;
-      height: 113px;
-      background: #a72730;
-      border: 5px solid var(--ink);
-      z-index: 3;
-    }
-
-    .chibi .robe-blue {
-      position: absolute;
-      left: 17px;
-      top: 128px;
-      width: 39px;
-      height: 107px;
-      background: #477ca5;
-      border: 5px solid var(--ink);
-      z-index: 2;
-      transform: skewY(-7deg);
-    }
-
-    .chibi .belt {
-      position: absolute;
-      left: 30px;
-      top: 176px;
-      width: 95px;
-      height: 25px;
-      background: #27202b;
-      border: 4px solid var(--ink);
-      z-index: 6;
-    }
-
-    .chibi .belt::after {
-      content: "◆";
-      position: absolute;
-      left: 38px;
-      top: -4px;
-      color: var(--gold);
-      font-size: 19px;
-    }
-
-    .chibi .leg {
-      position: absolute;
-      top: 220px;
-      width: 31px;
-      height: 45px;
-      background: #302531;
-      border: 5px solid var(--ink);
-      z-index: 1;
-    }
-    .chibi .leg.l { left: 42px; }
-    .chibi .leg.r { right: 42px; }
-
-    .chibi .head {
-      position: absolute;
-      left: 20px;
-      top: 29px;
-      width: 114px;
-      height: 91px;
-      background: #ffd0ad;
-      border: 5px solid var(--ink);
-      border-radius: 32px 32px 24px 24px;
-      z-index: 7;
-    }
-
-    .chibi .hair {
-      position: absolute;
-      left: 7px;
-      top: 6px;
-      width: 140px;
-      height: 74px;
-      background: #241820;
-      border: 5px solid var(--ink);
-      border-radius: 48px 48px 16px 16px;
-      z-index: 8;
-      box-shadow: 30px -18px 0 #2e2026, 61px -25px 0 #241820, 88px -13px 0 #2e2026;
-    }
-
-    .chibi .hair::before {
-      content: "";
-      position: absolute;
-      left: 30px;
-      top: 47px;
-      width: 22px;
-      height: 38px;
-      background: #241820;
-      border-left: 5px solid var(--ink);
-      border-right: 5px solid var(--ink);
-      transform: skewX(-12deg);
-    }
-
-    .chibi .eye {
-      position: absolute;
-      top: 59px;
-      width: 22px;
-      height: 18px;
-      background: #d69a31;
-      border: 4px solid var(--ink);
-      z-index: 9;
-    }
-    .chibi .eye.l { left: 39px; }
-    .chibi .eye.r { right: 39px; }
-    .chibi .eye::after { content:""; position:absolute; left:2px; top:2px; width:6px; height:6px; background:#fff; }
-
-    .chibi .mouth {
-      position: absolute;
-      left: 68px;
-      top: 98px;
-      width: 18px;
-      height: 5px;
-      background: var(--ink);
-      z-index: 9;
-    }
-
-    .chibi .earring {
-      position: absolute;
-      top: 88px;
-      width: 12px;
-      height: 31px;
-      background: var(--gold);
-      border: 3px solid var(--ink);
-      z-index: 10;
-    }
-    .chibi .earring.l { left: 12px; }
-    .chibi .earring.r { right: 12px; }
-
-    .spark {
-      position: absolute;
-      color: var(--gold);
-      font-size: 24px;
-      z-index: 12;
-      animation: blink 1.1s steps(2) infinite;
-      text-shadow: 2px 2px 0 #7c4f16;
-    }
-    .spark.s1 { right: -28px; top: 42px; }
-    .spark.s2 { left: -34px; top: 132px; animation-delay: .35s; }
-    @keyframes blink { 50% { opacity: .25; } }
-
-    .game-grid {
-      position: relative;
-      z-index: 3;
-      height: calc(100% - 68px);
-      display: grid;
-      grid-template-columns: minmax(320px, 470px) minmax(260px, 1fr);
-      gap: 34px;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .board {
-      width: min(46vw, 430px);
-      aspect-ratio: 1;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      padding: 15px;
-      background: rgba(255,240,207,.92);
-      border: 6px solid var(--ink);
-      box-shadow: 10px 10px 0 var(--shadow);
-    }
-
-    .cell {
-      cursor: pointer;
-      border: 5px solid var(--ink);
-      background: linear-gradient(#8bd5ff, #4ba9ee);
-      color: #fff;
-      font-size: clamp(44px, 6vw, 76px);
-      font-weight: 900;
-      text-shadow: 4px 4px 0 #21679b;
-      box-shadow: inset -7px -7px 0 rgba(0,0,0,.16);
-    }
-    .cell:hover:not(:disabled) { background: linear-gradient(#adffff, #67c9ff); }
-    .cell:disabled { cursor: default; }
-
-    .status h2 {
-      margin: 0 0 12px;
-      color: var(--red-dark);
-      font-size: 30px;
-      text-transform: uppercase;
-    }
-    .status p {
-      margin: 0 0 18px;
-      font-size: 19px;
-      line-height: 1.45;
-      font-weight: 700;
-    }
-
-    .win-grid {
-      position: relative;
-      z-index: 3;
-      height: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1.06fr;
-      align-items: center;
-      gap: 32px;
-    }
-
-    .hug-scene {
-      min-height: 360px;
-      display: flex;
-      align-items: end;
-      justify-content: center;
-    }
-    .hug-scene .chibi:nth-child(1) { transform: scale(.72) translateX(48px); z-index: 8; }
-    .hug-scene .chibi:nth-child(2) { transform: scale(.9) translateY(4px); z-index: 6; }
-    .hug-scene .chibi:nth-child(3) { transform: scale(.72) translateX(-48px); z-index: 8; }
-
-    .message h2 {
-      margin: 0 0 14px;
-      color: var(--red-dark);
-      font-size: clamp(28px, 4vw, 46px);
-      line-height: .95;
-      text-transform: uppercase;
-    }
-    .message p {
-      margin: 0 0 22px;
-      font-size: clamp(18px, 2vw, 23px);
-      line-height: 1.42;
-      font-weight: 700;
-    }
-
-    .final-card {
-      max-width: 760px;
-      margin: 18px auto 0;
-      font-size: 22px;
-      line-height: 1.45;
-      font-weight: 700;
-    }
-
-    .hidden { display: none !important; }
-
-    @media (max-width: 800px) {
-      .game { width: 100vw; height: 100vh; aspect-ratio: auto; border: 0; }
-      .screen { padding: 22px; }
-      .ready-grid, .game-grid, .win-grid { grid-template-columns: 1fr; gap: 14px; height: auto; }
-      .chibi-wrap { min-height: 250px; }
-      .chibi { transform: scale(.76); }
-      .board { width: min(88vw, 390px); margin: 0 auto; }
-      .paper-card { padding: 20px; }
-      .floating-item { transform: scale(.75); }
-    }
-  </style>
+/* ===== CHIBI SVG ===== */
+.chibi-container{position:relative;display:inline-block}
+.sparkle{position:absolute;color:var(--gold);font-size:18px;text-shadow:2px 2px 0 #7a4a00;animation:sp 1.2s steps(2) infinite}
+.sparkle.s1{right:-16px;top:20px}.sparkle.s2{left:-20px;top:80px;animation-delay:.4s}.sparkle.s3{right:-10px;top:120px;animation-delay:.7s}
+@keyframes sp{50%{opacity:.15}}
+</style>
 </head>
 <body>
-  <main class="game">
-    <div class="mountain left"></div><div class="mountain right"></div>
-    <div class="cloud a"></div><div class="cloud b"></div><div class="cloud c"></div>
-    <div class="hill one"></div><div class="hill two"></div><div class="hill three"></div>
-    <div class="floating-item lantern item-4"></div><div class="floating-item lantern item-5"></div>
-    <div class="floating-item cake item-3"></div><div class="floating-item envelope item-2"></div>
+<div class="game" id="game">
+  <!-- BG -->
+  <div class="bg-sky"></div>
+  <div class="bg-mountain" style="left:-20px">
+    <svg width="320" height="160" viewBox="0 0 320 160"><polygon points="0,160 80,40 140,90 190,20 320,160" fill="rgba(200,220,240,.4)" stroke="none"/></svg>
+  </div>
+  <div class="bg-mountain" style="right:-40px">
+    <svg width="280" height="140" viewBox="0 0 280 140"><polygon points="0,140 90,30 170,80 280,140" fill="rgba(180,210,230,.35)" stroke="none"/></svg>
+  </div>
+  <div class="bg-ground"></div>
 
-    <section class="screen active" id="startScreen">
-      <div class="center">
-        <div class="start-stack">
-          <div class="hearts">❤ ❤ ❤ ❤</div>
-          <p class="subtitle">Kornubula's birthday quest</p>
-          <h1 class="title big">Birthday<br>Game Arcade</h1>
-          <button class="btn" id="startBtn">Start</button>
-        </div>
-      </div>
-    </section>
+  <!-- Clouds pixel -->
+  <div class="cloud" style="top:10%;left:8%"><svg width="96" height="32" viewBox="0 0 96 32"><rect x="8" y="16" width="80" height="16" fill="#dff0f8"/><rect x="16" y="8" width="48" height="16" fill="#dff0f8"/><rect x="28" y="0" width="28" height="12" fill="#dff0f8"/></svg></div>
+  <div class="cloud" style="top:8%;right:14%"><svg width="72" height="24" viewBox="0 0 72 24"><rect x="4" y="12" width="64" height="12" fill="#dff0f8"/><rect x="12" y="4" width="40" height="14" fill="#dff0f8"/><rect x="22" y="0" width="22" height="10" fill="#dff0f8"/></svg></div>
+  <div class="cloud" style="top:22%;left:40%"><svg width="56" height="20" viewBox="0 0 56 20"><rect x="4" y="10" width="48" height="10" fill="rgba(223,240,248,.8)"/><rect x="10" y="4" width="32" height="12" fill="rgba(223,240,248,.8)"/></svg></div>
 
-    <section class="screen" id="readyScreen">
-      <div class="topbar">
-        <div class="badge">Diana HP<div class="hp"></div></div>
-        <div class="badge">Jianghu Birthday Mode</div>
-      </div>
-      <div class="ready-grid">
-        <div class="chibi-wrap" id="readyChibi"></div>
-        <div class="paper-card dialog">
-          <h2>Ready<br>to play?</h2>
-          <p>Пройди 4 лёгких раунда в крестики-нолики и открой поздравления для Дианы.</p>
-          <div class="choice">
-            <button class="btn" id="yesBtn">Yes</button>
-            <button class="btn alt" id="noBtn">No</button>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- Deco lanterns -->
+  <div class="lantern-deco" style="left:28px;top:15%"><svg width="28" height="52" viewBox="0 0 28 52"><rect x="10" y="0" width="8" height="6" fill="#f5c842" rx="1"/><rect x="4" y="6" width="20" height="36" rx="6" fill="#c43040"/><rect x="8" y="6" width="12" height="36" rx="4" fill="#e84060" opacity=".5"/><rect x="10" y="42" width="8" height="10" fill="#f5c842"/><rect x="12" y="50" width="4" height="6" fill="#f5c842"/></svg></div>
+  <div class="lantern-deco" style="right:32px;top:12%"><svg width="28" height="52" viewBox="0 0 28 52"><rect x="10" y="0" width="8" height="6" fill="#f5c842" rx="1"/><rect x="4" y="6" width="20" height="36" rx="6" fill="#c43040"/><rect x="8" y="6" width="12" height="36" rx="4" fill="#e84060" opacity=".5"/><rect x="10" y="42" width="8" height="10" fill="#f5c842"/><rect x="12" y="50" width="4" height="6" fill="#f5c842"/></svg></div>
 
-    <section class="screen" id="gameScreen">
-      <div class="topbar">
-        <div class="badge">Round <span id="roundNumber">1</span>/4<div class="hp"></div></div>
-        <div class="badge">Ты играешь: ❤</div>
+  <!-- ===== START SCREEN ===== -->
+  <section class="screen active" id="startScreen">
+    <div class="start-inner">
+      <div class="hearts-row">♥ ♥ ♥ ♥ ♥</div>
+      <div class="game-title">
+        <span class="line1">Kornubula's Birthday Quest</span>
+        <span class="line2">BIRTHDAY<br>GAME ARCADE</span>
       </div>
-      <div class="game-grid">
-        <div class="board" id="board"></div>
-        <div class="paper-card status">
-          <h2>Крестики-нолики</h2>
-          <p id="gameStatus">Твой ход. Бот играет специально легко, чтобы поздравления открывались без мучений.</p>
-          <button class="btn hidden" id="retryBtn">Replay</button>
-        </div>
+      <!-- deco items -->
+      <div style="display:flex;gap:28px;align-items:center;margin:4px 0">
+        <!-- cake pixel -->
+        <svg width="54" height="54" viewBox="0 0 54 54"><rect x="4" y="28" width="46" height="22" fill="#e88090" stroke="#1a1020" stroke-width="4"/><rect x="10" y="22" width="34" height="12" fill="#f0b0c0" stroke="#1a1020" stroke-width="3"/><rect x="24" y="8" width="6" height="16" fill="#f5c842" stroke="#1a1020" stroke-width="3"/><rect x="22" y="4" width="10" height="6" fill="#ff6030" stroke="#1a1020" stroke-width="2"/><rect x="8" y="36" width="38" height="4" fill="#c06070" stroke="none"/></svg>
+        <!-- envelope pixel -->
+        <svg width="54" height="42" viewBox="0 0 54 42"><rect x="2" y="2" width="50" height="38" fill="#ffeaf0" stroke="#1a1020" stroke-width="4"/><polygon points="2,2 27,24 52,2" fill="none" stroke="#1a1020" stroke-width="3"/><text x="27" y="36" text-anchor="middle" font-size="14" fill="#e84060">♥</text></svg>
       </div>
-    </section>
-
-    <section class="screen" id="winScreen">
-      <div class="win-grid">
-        <div class="hug-scene" id="hugScene"></div>
-        <div class="paper-card message">
-          <h2 id="winTitle">Раунд пройден</h2>
-          <p id="winMessage"></p>
-          <button class="btn" id="nextRoundBtn">Next</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="screen" id="finalScreen">
-      <div class="center">
-        <div>
-          <div class="hearts">❤ ❤ ❤ ❤ ❤</div>
-          <h2 class="title mid">Happy<br>Birthday!</h2>
-          <div class="paper-card final-card">
-            Диана, birthday quest завершён. Пусть в твоём Дзянху будет больше красивых побед, верных людей рядом, редкого лута и моментов, которые хочется сохранить как любимый скриншот.
-          </div>
-          <div style="margin-top: 28px;"><button class="btn" id="restartBtn">Play again</button></div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <template id="chibiTemplate">
-    <div class="chibi">
-      <div class="spark s1">✦</div><div class="spark s2">✦</div>
-      <div class="hair-back"></div><div class="robe-blue"></div><div class="fur"></div><div class="body"></div><div class="belt"></div>
-      <div class="leg l"></div><div class="leg r"></div><div class="head"></div><div class="hair"></div>
-      <div class="eye l"></div><div class="eye r"></div><div class="mouth"></div><div class="earring l"></div><div class="earring r"></div>
+      <button class="pixel-btn" id="startBtn">▶ START</button>
     </div>
-  </template>
+  </section>
 
-  <script>
-    const screens = {
-      start: document.getElementById('startScreen'),
-      ready: document.getElementById('readyScreen'),
-      game: document.getElementById('gameScreen'),
-      win: document.getElementById('winScreen'),
-      final: document.getElementById('finalScreen')
-    };
+  <!-- ===== READY SCREEN ===== -->
+  <section class="screen" id="readyScreen">
+    <div class="topbar">
+      <span class="topbar-badge">DIANA HP ♥♥♥♥</span>
+      <span class="topbar-badge">JIANGHU BIRTHDAY MODE</span>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:row;align-items:stretch">
+      <div class="ready-chibi-side" id="readyChibiSlot"></div>
+      <div class="ready-dialog-side">
+        <div class="paper-box">
+          <h2>Ready<br>to Play?</h2>
+          <p>Пройди 4 раунда крестиков-ноликов и открой поздравления для Дианы — воина Дзянху, именинника этого сервера.</p>
+          <div class="btn-row">
+            <button class="pixel-btn" id="yesBtn">YES ▶</button>
+            <button class="pixel-btn gold-btn" id="noBtn">NO</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    const boardEl = document.getElementById('board');
-    const statusEl = document.getElementById('gameStatus');
-    const roundNumberEl = document.getElementById('roundNumber');
-    const retryBtn = document.getElementById('retryBtn');
-    const nextRoundBtn = document.getElementById('nextRoundBtn');
-    const winTitleEl = document.getElementById('winTitle');
-    const winMessageEl = document.getElementById('winMessage');
-    const hugSceneEl = document.getElementById('hugScene');
-    const chibiTemplate = document.getElementById('chibiTemplate');
+  <!-- ===== GAME SCREEN ===== -->
+  <section class="screen" id="gameScreen">
+    <div class="topbar">
+      <span class="topbar-badge">ROUND <span id="roundNum">1</span>/4 &nbsp; ♥ ♥ ♥ ♥</span>
+      <span class="topbar-badge">ТЫ ИГРАЕШЬ: ♥</span>
+    </div>
+    <div class="game-area">
+      <div class="board-wrap"><div class="ttt-board" id="board"></div></div>
+      <div class="paper-box game-panel">
+        <h3>Крестики-нолики</h3>
+        <p id="gameStatus">Твой ход. Собери три ♥ в ряд.</p>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="pixel-btn" id="retryBtn" style="display:none;font-size:clamp(7px,1vw,9px)">REPLAY</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    const player = '❤';
-    const bot = '✦';
-    let board = Array(9).fill('');
-    let currentRound = 1;
-    let locked = false;
+  <!-- ===== WIN SCREEN ===== -->
+  <section class="screen" id="winScreen">
+    <div class="topbar">
+      <span class="topbar-badge" id="winRoundBadge">ROUND 1 CLEAR!</span>
+      <span class="topbar-badge">♥ ♥ ♥ ♥</span>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:row;align-items:stretch">
+      <div class="win-chibi-side" id="winChibiSlot"></div>
+      <div class="win-msg-side">
+        <div class="paper-box">
+          <h2 id="winTitle">Поздравление</h2>
+          <p id="winMsg" style="font-size:clamp(7px,1vw,10px);line-height:2;margin-bottom:16px"></p>
+          <button class="pixel-btn" id="nextBtn">NEXT ▶</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    const messages = [
-      {
-        title: 'Первое поздравление',
-        text: 'Диана, с днём рождения. Пусть Kornubula всегда входит в кадр как главный герой, а рядом будут люди, с которыми спокойно идти хоть на босса, хоть в новый квест.'
-      },
-      {
-        title: 'Второе поздравление',
-        text: 'Желаем тебе редкого лута, красивых побед, стабильного урона по грусти и настроения, которое не ломают ни рандомы, ни сложные механики.'
-      },
-      {
-        title: 'Третье поздравление',
-        text: 'Пусть новый год жизни будет как лучший ивент: тёплый, яркий, смешной, с красивыми моментами и наградами, которые правда хочется забрать.'
-      },
-      {
-        title: 'Финальное поздравление',
-        text: 'Сегодня весь наш маленький сервер празднует тебя. Будь счастлива, сияй и собирай вокруг себя только тех, кто обнимает после каждого раунда.'
-      }
-    ];
+  <!-- ===== FINAL SCREEN ===== -->
+  <section class="screen" id="finalScreen">
+    <div class="final-inner">
+      <div class="hearts-row">♥ ♥ ♥ ♥ ♥</div>
+      <div class="game-title" style="text-align:center;margin-bottom:8px">
+        <span class="line2" style="font-size:clamp(18px,4vw,42px)">HAPPY<br>BIRTHDAY!</span>
+      </div>
+      <div style="display:flex;gap:-30px;margin-bottom:8px" id="finalChibis"></div>
+      <div class="final-msg">
+        <p>Диана, birthday quest завершён.<br><br>
+        Пусть в твоём Дзянху будет больше красивых побед, верных людей рядом, редкого лута и моментов, которые хочется сохранить как любимый скриншот. Сегодня весь наш сервер празднует тебя. ♥</p>
+      </div>
+      <button class="pixel-btn gold-btn" id="restartBtn" style="margin-top:8px">PLAY AGAIN</button>
+    </div>
+  </section>
+</div>
 
-    function showScreen(name) {
-      Object.values(screens).forEach(screen => screen.classList.remove('active'));
-      screens[name].classList.add('active');
-    }
+<script>
+// ---- CHIBI SVG ----
+// Chibi based on the reference image: dark swept hair, fur-trim cloak, red robe, gold necklace, amber eyes
+function makeChibi(scale=1, flip=false){
+  const w=110,h=200;
+  const sc=`scale(${flip?-scale:scale},${scale})`;
+  const tx=flip?-w*scale:0;
+  return `<svg width="${w*scale}" height="${h*scale}" viewBox="0 0 ${w} ${h}" style="display:block;overflow:visible">
+  <g transform="translate(${tx},0) ${sc}">
+    <!-- legs -->
+    <rect x="30" y="148" width="20" height="40" rx="3" fill="#3a2030" stroke="#1a1020" stroke-width="3"/>
+    <rect x="58" y="148" width="20" height="40" rx="3" fill="#3a2030" stroke="#1a1020" stroke-width="3"/>
+    <!-- boots -->
+    <rect x="28" y="174" width="24" height="14" rx="4" fill="#2a1820" stroke="#1a1020" stroke-width="3"/>
+    <rect x="56" y="174" width="24" height="14" rx="4" fill="#2a1820" stroke="#1a1020" stroke-width="3"/>
+    <!-- body robe red -->
+    <rect x="22" y="90" width="66" height="70" rx="6" fill="#c43040" stroke="#1a1020" stroke-width="4"/>
+    <!-- robe dark pattern -->
+    <rect x="30" y="110" width="8" height="50" fill="#a02030" rx="2"/>
+    <rect x="72" y="110" width="8" height="50" fill="#a02030" rx="2"/>
+    <!-- fur cloak white/cream -->
+    <path d="M8,75 Q4,120 12,165 L28,155 L28,90 Z" fill="#ddd8cc" stroke="#1a1020" stroke-width="3"/>
+    <path d="M102,75 Q106,120 98,165 L82,155 L82,90 Z" fill="#c8c0a8" stroke="#1a1020" stroke-width="3"/>
+    <!-- fur texture left -->
+    <line x1="14" y1="90" x2="10" y2="100" stroke="#b8b090" stroke-width="2"/>
+    <line x1="16" y1="105" x2="11" y2="115" stroke="#b8b090" stroke-width="2"/>
+    <line x1="15" y1="120" x2="10" y2="130" stroke="#b8b090" stroke-width="2"/>
+    <!-- fur texture right -->
+    <line x1="96" y1="90" x2="100" y2="100" stroke="#a8a080" stroke-width="2"/>
+    <line x1="94" y1="105" x2="99" y2="115" stroke="#a8a080" stroke-width="2"/>
+    <line x1="95" y1="120" x2="100" y2="130" stroke="#a8a080" stroke-width="2"/>
+    <!-- belt wolf buckle -->
+    <rect x="22" y="140" width="66" height="14" rx="2" fill="#2a1820" stroke="#1a1020" stroke-width="3"/>
+    <rect x="44" y="138" width="22" height="18" rx="3" fill="#c8c0a8" stroke="#1a1020" stroke-width="3"/>
+    <ellipse cx="55" cy="147" rx="7" ry="6" fill="#8a8070" stroke="#1a1020" stroke-width="2"/>
+    <!-- gold necklace -->
+    <path d="M30,96 Q55,112 80,96" fill="none" stroke="#f5c842" stroke-width="4"/>
+    <circle cx="45" cy="103" r="4" fill="#f5c842" stroke="#1a1020" stroke-width="2"/>
+    <circle cx="55" cy="106" r="5" fill="#c43040" stroke="#1a1020" stroke-width="2"/>
+    <circle cx="65" cy="103" r="4" fill="#f5c842" stroke="#1a1020" stroke-width="2"/>
+    <!-- arms -->
+    <rect x="5" y="88" width="20" height="50" rx="8" fill="#c43040" stroke="#1a1020" stroke-width="3"/>
+    <rect x="85" y="88" width="20" height="50" rx="8" fill="#c43040" stroke="#1a1020" stroke-width="3"/>
+    <!-- hands -->
+    <ellipse cx="15" cy="142" rx="10" ry="8" fill="#f0c890" stroke="#1a1020" stroke-width="3"/>
+    <ellipse cx="95" cy="142" rx="10" ry="8" fill="#f0c890" stroke="#1a1020" stroke-width="3"/>
+    <!-- head -->
+    <ellipse cx="55" cy="52" rx="38" ry="36" fill="#f0c890" stroke="#1a1020" stroke-width="4"/>
+    <!-- ear -->
+    <ellipse cx="18" cy="54" rx="8" ry="10" fill="#f0c890" stroke="#1a1020" stroke-width="3"/>
+    <ellipse cx="92" cy="54" rx="8" ry="10" fill="#f0c890" stroke="#1a1020" stroke-width="3"/>
+    <!-- earrings gold -->
+    <rect x="12" y="56" width="6" height="16" rx="3" fill="#f5c842" stroke="#1a1020" stroke-width="2"/>
+    <rect x="88" y="56" width="6" height="16" rx="3" fill="#f5c842" stroke="#1a1020" stroke-width="2"/>
+    <!-- hair base dark -->
+    <ellipse cx="55" cy="32" rx="40" ry="28" fill="#1a1020" stroke="#1a1020" stroke-width="3"/>
+    <!-- hair swept messy top -->
+    <path d="M30,20 Q40,4 55,14 Q62,4 72,10 Q82,2 88,16" fill="none" stroke="#1a1020" stroke-width="6" stroke-linecap="round"/>
+    <path d="M20,28 Q15,14 28,10 Q24,6 35,12" fill="#1a1020" stroke="#1a1020" stroke-width="3"/>
+    <path d="M90,28 Q95,14 82,10 Q86,6 75,12" fill="#1a1020" stroke="#1a1020" stroke-width="3"/>
+    <!-- hair bun top -->
+    <ellipse cx="58" cy="10" rx="12" ry="9" fill="#1a1020" stroke="#1a1020" stroke-width="3"/>
+    <!-- hair pin gold -->
+    <rect x="54" y="4" width="3" height="12" fill="#f5c842" rx="1"/>
+    <circle cx="55.5" cy="4" r="3" fill="#f5c842" stroke="#1a1020" stroke-width="1"/>
+    <!-- hair flowing side left -->
+    <path d="M18,36 Q10,60 14,90 Q20,80 22,60 Q20,45 18,36Z" fill="#1a1020" stroke="#1a1020" stroke-width="2"/>
+    <!-- hair flowing side right -->
+    <path d="M92,36 Q100,60 96,90 Q90,80 88,60 Q90,45 92,36Z" fill="#1a1020" stroke="#1a1020" stroke-width="2"/>
+    <!-- face features -->
+    <!-- mole under right eye (character detail) -->
+    <circle cx="72" cy="60" r="2.5" fill="#3a1820"/>
+    <!-- eyebrows -->
+    <path d="M36,38 Q44,34 50,36" fill="none" stroke="#1a1020" stroke-width="3" stroke-linecap="round"/>
+    <path d="M60,36 Q66,34 74,38" fill="none" stroke="#1a1020" stroke-width="3" stroke-linecap="round"/>
+    <!-- eyes amber -->
+    <ellipse cx="43" cy="48" rx="9" ry="8" fill="#f0a830" stroke="#1a1020" stroke-width="3"/>
+    <ellipse cx="67" cy="48" rx="9" ry="8" fill="#f0a830" stroke="#1a1020" stroke-width="3"/>
+    <!-- pupils -->
+    <ellipse cx="44" cy="49" rx="5" ry="6" fill="#3a1820"/>
+    <ellipse cx="68" cy="49" rx="5" ry="6" fill="#3a1820"/>
+    <!-- eye shine -->
+    <circle cx="46" cy="46" r="2.5" fill="white"/>
+    <circle cx="70" cy="46" r="2.5" fill="white"/>
+    <!-- nose -->
+    <path d="M52,58 Q55,62 58,58" fill="none" stroke="#c8905a" stroke-width="2" stroke-linecap="round"/>
+    <!-- mouth small -->
+    <path d="M46,66 Q55,72 64,66" fill="none" stroke="#1a1020" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- heart deco -->
+    <text x="6" y="84" font-size="12" fill="#e84060">♥</text>
+  </g>
+</svg>`;
+}
 
-    function makeChibi() {
-      return chibiTemplate.content.firstElementChild.cloneNode(true);
-    }
+function makeChibiNode(scale=1,flip=false){
+  const d=document.createElement('div');
+  d.className='chibi-container';
+  d.innerHTML=makeChibi(scale,flip)+
+    '<span class="sparkle s1">✦</span><span class="sparkle s2">✦</span><span class="sparkle s3">✦</span>';
+  return d;
+}
 
-    function fillChibiPlaces() {
-      const ready = document.getElementById('readyChibi');
-      ready.innerHTML = '';
-      ready.appendChild(makeChibi());
-    }
+// ---- GAME STATE ----
+const P='♥', B='✦';
+let board,round,locked;
 
-    function startRound() {
-      board = Array(9).fill('');
-      locked = false;
-      roundNumberEl.textContent = currentRound;
-      statusEl.textContent = 'Твой ход. Бот играет легко: он не блокирует победу специально.';
-      retryBtn.classList.add('hidden');
-      renderBoard();
-      showScreen('game');
-    }
+const screens={
+  start:document.getElementById('startScreen'),
+  ready:document.getElementById('readyScreen'),
+  game:document.getElementById('gameScreen'),
+  win:document.getElementById('winScreen'),
+  final:document.getElementById('finalScreen')
+};
 
-    function renderBoard() {
-      boardEl.innerHTML = '';
-      board.forEach((value, index) => {
-        const cell = document.createElement('button');
-        cell.className = 'cell';
-        cell.textContent = value;
-        cell.disabled = locked || Boolean(value);
-        cell.addEventListener('click', () => playerMove(index));
-        boardEl.appendChild(cell);
-      });
-    }
+const messages=[
+  {title:'Первое поздравление',msg:'Диана, с днём рождения! Пусть Kornubula всегда входит в кадр как главный герой Дзянху — и рядом будут люди, с которыми спокойно идти хоть на босса, хоть в новый квест. ♥'},
+  {title:'Второе поздравление',msg:'Желаем тебе редкого лута, красивых побед, стабильного урона по грусти — и настроения, которое не ломают ни рандомы, ни сложные механики. ♥'},
+  {title:'Третье поздравление',msg:'Пусть новый год жизни будет как лучший ивент: тёплый, яркий, смешной, с красивыми моментами и наградами, которые правда хочется оставить в сундуке навсегда. ♥'},
+  {title:'Финальное поздравление',msg:'Сегодня весь наш маленький сервер празднует тебя. Будь счастлива, сияй и собирай вокруг себя только тех, кто обнимает после каждого раунда. С днём рождения, Диана! ♥'}
+];
 
-    function playerMove(index) {
-      if (locked || board[index]) return;
-      board[index] = player;
-      renderBoard();
+function show(name){
+  Object.values(screens).forEach(s=>s.classList.remove('active'));
+  screens[name].classList.add('active');
+}
 
-      if (hasWinner(board, player)) {
-        setTimeout(openWinMessage, 250);
-        return;
-      }
+function initReady(){
+  const slot=document.getElementById('readyChibiSlot');
+  slot.innerHTML='';
+  slot.appendChild(makeChibiNode(1.1));
+  show('ready');
+}
 
-      if (isDraw()) {
-        openWinMessage();
-        return;
-      }
+function startRound(){
+  board=Array(9).fill('');
+  locked=false;
+  document.getElementById('roundNum').textContent=round;
+  document.getElementById('gameStatus').textContent='Твой ход. Собери три ♥ в ряд.';
+  document.getElementById('retryBtn').style.display='none';
+  renderBoard();
+  show('game');
+}
 
-      locked = true;
-      statusEl.textContent = 'Ход соперника...';
-      setTimeout(botMove, 350);
-    }
+function renderBoard(){
+  const el=document.getElementById('board');
+  el.innerHTML='';
+  board.forEach((v,i)=>{
+    const btn=document.createElement('button');
+    btn.className='cell'+(v===P?' x-cell':v===B?' o-cell':'');
+    btn.textContent=v;
+    btn.disabled=locked||Boolean(v);
+    btn.onclick=()=>playerMove(i);
+    el.appendChild(btn);
+  });
+}
 
-    function botMove() {
-      const empty = board.map((v, i) => v ? null : i).filter(v => v !== null);
-      if (!empty.length) {
-        openWinMessage();
-        return;
-      }
+function win(b,s){
+  const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  return lines.some(l=>l.every(i=>b[i]===s));
+}
+function draw(){return board.every(Boolean)}
 
-      const corners = [0, 2, 6, 8].filter(i => empty.includes(i));
-      const sides = [1, 3, 5, 7].filter(i => empty.includes(i));
-      let pool = sides.length ? sides : corners.length ? corners : empty;
+function playerMove(i){
+  if(locked||board[i])return;
+  board[i]=P;
+  renderBoard();
+  if(win(board,P)){setTimeout(openWin,250);return}
+  if(draw()){setTimeout(openWin,250);return}
+  locked=true;
+  document.getElementById('gameStatus').textContent='Ход соперника...';
+  setTimeout(botMove,380);
+}
 
-      if (Math.random() < 0.75 && empty.includes(4)) {
-        pool = empty.filter(i => i !== 4);
-        if (!pool.length) pool = empty;
-      }
+function botMove(){
+  const empty=board.map((v,i)=>v?null:i).filter(v=>v!==null);
+  if(!empty.length){openWin();return}
+  // bot plays weak: prefer edges/random, avoid winning moves
+  const center=[4].filter(i=>empty.includes(i));
+  const edges=[1,3,5,7].filter(i=>empty.includes(i));
+  const corners=[0,2,6,8].filter(i=>empty.includes(i));
+  let pool=edges.length?edges:(corners.length?corners:empty);
+  // 80% chance to avoid winning to keep it easy
+  const winning=empty.filter(i=>{const t=[...board];t[i]=B;return win(t,B)});
+  if(winning.length&&Math.random()<0.85)pool=empty.filter(i=>!winning.includes(i));
+  if(!pool.length)pool=empty;
+  const move=pool[Math.floor(Math.random()*pool.length)];
+  board[move]=B;
+  locked=false;
+  renderBoard();
+  if(win(board,B)){
+    document.getElementById('gameStatus').textContent='Бот случайно победил. Нажми REPLAY — это праздничная игра!';
+    document.getElementById('retryBtn').style.display='inline-block';
+    locked=true;renderBoard();return;
+  }
+  if(draw()){openWin();return}
+  document.getElementById('gameStatus').textContent='Твой ход. Собери три ♥ в ряд.';
+}
 
-      const move = pool[Math.floor(Math.random() * pool.length)];
-      board[move] = bot;
-      locked = false;
-      renderBoard();
+function openWin(){
+  const m=messages[round-1];
+  document.getElementById('winRoundBadge').textContent=`ROUND ${round} CLEAR! ★`;
+  document.getElementById('winTitle').textContent=m.title;
+  document.getElementById('winMsg').textContent=m.msg;
+  document.getElementById('nextBtn').textContent=round>=4?'FINAL ★':'NEXT ▶';
+  const slot=document.getElementById('winChibiSlot');
+  slot.innerHTML='';
+  // 3 chibis hugging
+  const c1=makeChibiNode(0.65,false);c1.style.transform='translateX(20px)';c1.style.zIndex='3';
+  const c2=makeChibiNode(0.85,false);c2.style.zIndex='5';
+  const c3=makeChibiNode(0.65,true);c3.style.transform='translateX(-20px)';c3.style.zIndex='3';
+  slot.appendChild(c1);slot.appendChild(c2);slot.appendChild(c3);
+  show('win');
+}
 
-      if (hasWinner(board, bot)) {
-        statusEl.textContent = 'Бот случайно выиграл. Нажми Replay — это поздравительная игра, а не страдание.';
-        retryBtn.classList.remove('hidden');
-        locked = true;
-        renderBoard();
-        return;
-      }
+function showFinal(){
+  const slot=document.getElementById('finalChibis');
+  slot.innerHTML='';
+  const c1=makeChibiNode(0.7,false);
+  const c2=makeChibiNode(0.9,false);
+  const c3=makeChibiNode(0.7,true);
+  [c1,c2,c3].forEach(c=>{c.style.display='inline-block';slot.appendChild(c)});
+  show('final');
+}
 
-      if (isDraw()) {
-        openWinMessage();
-        return;
-      }
-
-      statusEl.textContent = 'Твой ход. Собери три сердечка в ряд.';
-    }
-
-    function hasWinner(target, symbol) {
-      const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-      return lines.some(line => line.every(i => target[i] === symbol));
-    }
-
-    function isDraw() {
-      return board.every(Boolean);
-    }
-
-    function openWinMessage() {
-      const message = messages[currentRound - 1];
-      winTitleEl.textContent = message.title;
-      winMessageEl.textContent = message.text;
-      nextRoundBtn.textContent = currentRound >= 4 ? 'Final' : 'Next';
-      hugSceneEl.innerHTML = '';
-      hugSceneEl.appendChild(makeChibi());
-      hugSceneEl.appendChild(makeChibi());
-      hugSceneEl.appendChild(makeChibi());
-      showScreen('win');
-    }
-
-    document.getElementById('startBtn').addEventListener('click', () => showScreen('ready'));
-    document.getElementById('yesBtn').addEventListener('click', startRound);
-    document.getElementById('noBtn').addEventListener('click', () => {
-      document.querySelector('.dialog p').textContent = 'Отступление отменено. Birthday quest уже активирован.';
-    });
-    retryBtn.addEventListener('click', startRound);
-    nextRoundBtn.addEventListener('click', () => {
-      if (currentRound >= 4) showScreen('final');
-      else { currentRound += 1; startRound(); }
-    });
-    document.getElementById('restartBtn').addEventListener('click', () => {
-      currentRound = 1;
-      showScreen('start');
-    });
-
-    fillChibiPlaces();
-  </script>
+// ---- BUTTONS ----
+document.getElementById('startBtn').onclick=()=>initReady();
+document.getElementById('yesBtn').onclick=()=>{round=1;startRound()};
+document.getElementById('noBtn').onclick=()=>{
+  document.querySelector('#readyScreen .paper-box p').textContent='Отступление невозможно. Birthday Quest уже активирован системой Дзянху. ♥';
+};
+document.getElementById('retryBtn').onclick=()=>startRound();
+document.getElementById('nextBtn').onclick=()=>{
+  if(round>=4)showFinal();
+  else{round++;startRound()}
+};
+document.getElementById('restartBtn').onclick=()=>{round=1;show('start')};
+</script>
 </body>
 </html>
