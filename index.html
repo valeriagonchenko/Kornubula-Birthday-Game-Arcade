@@ -130,12 +130,10 @@ body{
   position:absolute;
   left:0; right:0; bottom:0;
   height:210px;
-  background:
-    polygon(0 100%);
   clip-path: polygon(
-    0 100%, 0 70%, 5% 70%, 7% 48%, 9% 70%, 14% 70%, 16% 38%, 18% 70%, 25% 70%, 27% 44%, 29% 70%, 
-    34% 70%, 36% 52%, 38% 70%, 44% 70%, 46% 26%, 48% 70%, 53% 70%, 55% 40%, 57% 70%, 
-    62% 70%, 64% 20%, 66% 70%, 72% 70%, 74% 46%, 76% 70%, 82% 70%, 84% 34%, 86% 70%, 
+    0 100%, 0 70%, 5% 70%, 7% 48%, 9% 70%, 14% 70%, 16% 38%, 18% 70%, 25% 70%, 27% 44%, 29% 70%,
+    34% 70%, 36% 52%, 38% 70%, 44% 70%, 46% 26%, 48% 70%, 53% 70%, 55% 40%, 57% 70%,
+    62% 70%, 64% 20%, 66% 70%, 72% 70%, 74% 46%, 76% 70%, 82% 70%, 84% 34%, 86% 70%,
     91% 70%, 93% 50%, 95% 70%, 100% 70%, 100% 100%
   );
   background:#09070d;
@@ -159,11 +157,10 @@ body{
 }
 .pagoda::before{
   inset:0;
-  background:
-    linear-gradient(#0f0a14, #0f0a14);
+  background:linear-gradient(#0f0a14, #0f0a14);
   clip-path: polygon(
-    40% 0, 60% 0, 62% 8%, 75% 12%, 67% 14%, 70% 18%, 60% 18%, 62% 24%, 77% 28%, 67% 30%, 70% 34%, 
-    58% 34%, 60% 40%, 76% 44%, 66% 46%, 69% 50%, 56% 50%, 56% 100%, 44% 100%, 44% 50%, 
+    40% 0, 60% 0, 62% 8%, 75% 12%, 67% 14%, 70% 18%, 60% 18%, 62% 24%, 77% 28%, 67% 30%, 70% 34%,
+    58% 34%, 60% 40%, 76% 44%, 66% 46%, 69% 50%, 56% 50%, 56% 100%, 44% 100%, 44% 50%,
     31% 50%, 34% 46%, 24% 44%, 40% 40%, 42% 34%, 30% 34%, 33% 30%, 23% 28%, 38% 24%, 40% 18%,
     30% 18%, 33% 14%, 25% 12%, 38% 8%
   );
@@ -193,7 +190,6 @@ body{
   background:repeating-linear-gradient(90deg,#3d2140 0 14px,#241228 14px 28px);
 }
 
-/* lanterns */
 .lantern{
   position:absolute;
   z-index:4;
@@ -214,7 +210,6 @@ body{
 .cloud.c2{ left:340px; top:118px; transform:scale(.8); opacity:.35; }
 .cloud.c3{ right:250px; top:84px; transform:scale(.75); }
 
-/* corner ornaments */
 .corner{
   position:absolute;
   width:88px;
@@ -348,14 +343,6 @@ body{
   letter-spacing:7px;
 }
 
-.subtitle-red{
-  color:#d33a49;
-  text-shadow:2px 2px 0 #4b1017;
-  font-size:clamp(7px,0.9vw,10px);
-  line-height:1.9;
-}
-
-/* image token */
 .token-wrap{
   position:relative;
   display:inline-flex;
@@ -462,8 +449,8 @@ body{
   flex:1;
   padding:96px 34px 30px;
   display:grid;
-  grid-template-columns: minmax(240px, 380px) minmax(320px, 1fr);
-  gap:28px;
+  grid-template-columns: minmax(320px, 500px) minmax(320px, 1fr);
+  gap:20px;
   align-items:center;
   position:relative;
   z-index:20;
@@ -478,9 +465,9 @@ body{
 }
 
 .ready-frame{
-  width:min(100%, 340px);
-  min-height:370px;
-  padding:18px;
+  width:min(100%, 420px);
+  min-height:430px;
+  padding:14px;
   background:
     linear-gradient(180deg, rgba(36,16,28,.92), rgba(16,10,18,.9));
   border:5px solid #2d1832;
@@ -488,6 +475,10 @@ body{
     8px 8px 0 rgba(0,0,0,.42),
     0 0 0 4px rgba(170,57,76,.14) inset;
   position:relative;
+  overflow:visible;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
 }
 
 .ready-frame::before{
@@ -498,6 +489,7 @@ body{
   font-size:20px;
   color:rgba(244,196,79,.85);
   text-shadow:2px 2px 0 #553500;
+  z-index:4;
 }
 
 .ready-frame::after{
@@ -508,13 +500,31 @@ body{
   font-size:20px;
   color:rgba(211,58,73,.92);
   text-shadow:2px 2px 0 #4d1118;
+  z-index:4;
 }
 
 .ready-cake{
   width:100%;
   height:100%;
-  min-height:330px;
+  min-height:390px;
   position:relative;
+  overflow:visible;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.ready-cake img{
+  width:150%;
+  max-width:none;
+  max-height:none;
+  object-fit:contain;
+  transform:translateY(24px) translateX(-8px);
+  filter:drop-shadow(0 18px 24px rgba(0,0,0,.42));
+}
+
+.ready-cake .sparkles{
+  inset:-8px;
 }
 
 .ready-dialog{
@@ -676,6 +686,31 @@ body{
     0 0 0 4px rgba(170,60,79,.12) inset;
 }
 
+.win-cakes.single-big{
+  min-height:360px;
+  justify-content:center;
+  align-items:flex-end;
+}
+
+.win-cakes.single-big .token-wrap{
+  width:360px !important;
+  height:390px !important;
+  transform:none !important;
+}
+
+.win-cakes.single-big img{
+  width:132%;
+  max-width:none;
+  max-height:none;
+  object-fit:contain;
+  transform:translateY(18px);
+  filter:drop-shadow(0 18px 24px rgba(0,0,0,.42));
+}
+
+.win-cakes.single-big .sparkles{
+  inset:-8px;
+}
+
 .msg-panel{
   padding:24px 24px 22px;
   max-width:580px;
@@ -794,6 +829,11 @@ body{
 
   .win-cakes{
     min-height:250px;
+  }
+
+  .win-cakes.single-big .token-wrap{
+    width:min(88vw, 360px) !important;
+    height:330px !important;
   }
 
   .final-cakes .token-wrap,
@@ -971,7 +1011,7 @@ body{
       <div class="ready-visual">
         <div class="ready-frame">
           <div class="token-wrap ready-cake" id="readyCakeSlot">
-            <img src="cake.png" alt="Birthday cake">
+            <img src="cake.png" alt="Birthday character">
             <div class="sparkles">
               <span>✦</span><span>✦</span><span>✦</span>
             </div>
@@ -1061,6 +1101,7 @@ body{
 const P='♥';
 const B='✦';
 const CAKE_SRC='cake.png';
+const WIKTA_SRC='wikta.png';
 
 let board = [];
 let round = 1;
@@ -1076,8 +1117,8 @@ const screens = {
 
 const messages = [
   {
-    title:'Первое поздравление',
-    msg:'Диана, с днём рождения! Пусть Kornubula всегда входит в кадр как главный герой Дзянху — и рядом будут люди, с которыми спокойно идти хоть на босса, хоть в новый квест. ♥'
+    title:'Первое поздравление — Wikta',
+    msg:'Диана, с днём рождения! Это поздравление от Wikta. Пусть у тебя будет много тёплых моментов, красивых побед, уютных людей рядом и таких дней, которые хочется сохранить как самый любимый скриншот. ♥'
   },
   {
     title:'Второе поздравление',
@@ -1098,15 +1139,15 @@ function show(name){
   screens[name].classList.add('active');
 }
 
-function makeCakeNode(scale=1, mirrored=false){
+function makeVisualNode(src, scale=1, mirrored=false){
   const wrap = document.createElement('div');
   wrap.className = 'token-wrap cake-card';
   wrap.style.width = `${180 * scale}px`;
   wrap.style.height = `${260 * scale}px`;
 
   const img = document.createElement('img');
-  img.src = CAKE_SRC;
-  img.alt = 'Birthday cake';
+  img.src = src;
+  img.alt = 'Birthday image';
   img.style.transform = mirrored ? 'scaleX(-1)' : 'none';
 
   const sparkles = document.createElement('div');
@@ -1122,12 +1163,15 @@ function makeCakeNode(scale=1, mirrored=false){
 function fillReadyCake(){
   const slot = document.getElementById('readyCakeSlot');
   slot.innerHTML = '';
+
   const img = document.createElement('img');
   img.src = CAKE_SRC;
-  img.alt = 'Birthday cake';
+  img.alt = 'Birthday character';
+
   const sparkles = document.createElement('div');
   sparkles.className = 'sparkles';
   sparkles.innerHTML = '<span>✦</span><span>✦</span><span>✦</span>';
+
   slot.appendChild(img);
   slot.appendChild(sparkles);
 }
@@ -1246,9 +1290,16 @@ function openWin(){
 
   const slot = document.getElementById('winCakeSlot');
   slot.innerHTML = '';
-  slot.appendChild(makeCakeNode(0.78, false));
-  slot.appendChild(makeCakeNode(1, false));
-  slot.appendChild(makeCakeNode(0.78, true));
+  slot.classList.remove('single-big');
+
+  if(round === 1){
+    slot.classList.add('single-big');
+    slot.appendChild(makeVisualNode(WIKTA_SRC, 1.35, false));
+  } else {
+    slot.appendChild(makeVisualNode(CAKE_SRC, 0.78, false));
+    slot.appendChild(makeVisualNode(CAKE_SRC, 1, false));
+    slot.appendChild(makeVisualNode(CAKE_SRC, 0.78, true));
+  }
 
   show('win');
 }
@@ -1256,9 +1307,9 @@ function openWin(){
 function showFinal(){
   const slot = document.getElementById('finalCakeSlot');
   slot.innerHTML = '';
-  slot.appendChild(makeCakeNode(0.82, false));
-  slot.appendChild(makeCakeNode(1.02, false));
-  slot.appendChild(makeCakeNode(0.82, true));
+  slot.appendChild(makeVisualNode(CAKE_SRC, 0.82, false));
+  slot.appendChild(makeVisualNode(CAKE_SRC, 1.02, false));
+  slot.appendChild(makeVisualNode(CAKE_SRC, 0.82, true));
   show('final');
 }
 
